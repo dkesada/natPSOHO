@@ -1,5 +1,5 @@
 
-# natPSOHO
+# intPSOHO
 
 This is an extension of the particle swarm optimization structure
 learning algorithm for higher-order dynamic Bayesian networks from
