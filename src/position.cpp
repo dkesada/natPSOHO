@@ -1,19 +1,18 @@
 #include "include/position.h"
 
-//' Create a causal list from a DBN. This is the C++ backend of the function.
+//' Create a natural causal list from a DBN. This is the C++ backend of the function.
 //' 
 //' @param cl an initialized causality list
 //' @param net a dbn object treated as a list of lists
-//' @param size the size of the DBN
 //' @param ordering a list with the order of the variables in t_0
-//' @return a list with a CharacterVector and a NumericVector
+//' @return the natCauslist equivalent to the DBN
 // [[Rcpp::export]]
-Rcpp::List create_causlist_cpp(Rcpp::List &cl, Rcpp::List &net, unsigned int size, StringVector &ordering) {
+Rcpp::NumericVector create_natcauslist_cpp(Rcpp::NumericVector &cl, Rcpp::List &net, StringVector &ordering) {
   Rcpp::List aux;
-  Rcpp::StringVector caus_unit, parents;
+  Rcpp::StringVector parents;
   std::string node;
     
-  // Translation into causal list
+  // Translation into natural causal list
   for(unsigned int i = 0; i < ordering.size(); i++){
     node = ordering[i];
     aux = net[node];
@@ -21,7 +20,7 @@ Rcpp::List create_causlist_cpp(Rcpp::List &cl, Rcpp::List &net, unsigned int siz
 
     for(unsigned int j = 0; j < parents.size(); j++){
       node = parents[j];
-      insert_node_cl(cl, node, i);
+      insert_node_natcl(cl, ordering, node, i);
     }
   }
   

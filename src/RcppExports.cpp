@@ -5,35 +5,22 @@
 
 using namespace Rcpp;
 
-// initialize_cl_cpp
-Rcpp::List initialize_cl_cpp(StringVector& ordering, unsigned int size);
-RcppExport SEXP _psoho_initialize_cl_cpp(SEXP orderingSEXP, SEXP sizeSEXP) {
+// create_natcauslist_cpp
+Rcpp::NumericVector create_natcauslist_cpp(Rcpp::NumericVector& cl, Rcpp::List& net, StringVector& ordering);
+RcppExport SEXP _natPsoho_create_natcauslist_cpp(SEXP clSEXP, SEXP netSEXP, SEXP orderingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector& >::type ordering(orderingSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type size(sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_cl_cpp(ordering, size));
-    return rcpp_result_gen;
-END_RCPP
-}
-// create_causlist_cpp
-Rcpp::List create_causlist_cpp(Rcpp::List& cl, Rcpp::List& net, unsigned int size, StringVector& ordering);
-RcppExport SEXP _psoho_create_causlist_cpp(SEXP clSEXP, SEXP netSEXP, SEXP sizeSEXP, SEXP orderingSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type cl(clSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type cl(clSEXP);
     Rcpp::traits::input_parameter< Rcpp::List& >::type net(netSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< StringVector& >::type ordering(orderingSEXP);
-    rcpp_result_gen = Rcpp::wrap(create_causlist_cpp(cl, net, size, ordering));
+    rcpp_result_gen = Rcpp::wrap(create_natcauslist_cpp(cl, net, ordering));
     return rcpp_result_gen;
 END_RCPP
 }
 // cl_to_arc_matrix_cpp
 Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(Rcpp::List& cl, Rcpp::CharacterVector& ordering, unsigned int rows);
-RcppExport SEXP _psoho_cl_to_arc_matrix_cpp(SEXP clSEXP, SEXP orderingSEXP, SEXP rowsSEXP) {
+RcppExport SEXP _natPsoho_cl_to_arc_matrix_cpp(SEXP clSEXP, SEXP orderingSEXP, SEXP rowsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -46,7 +33,7 @@ END_RCPP
 }
 // pos_plus_vel_cpp
 Rcpp::List pos_plus_vel_cpp(Rcpp::List& cl, Rcpp::List& vl, int n_arcs);
-RcppExport SEXP _psoho_pos_plus_vel_cpp(SEXP clSEXP, SEXP vlSEXP, SEXP n_arcsSEXP) {
+RcppExport SEXP _natPsoho_pos_plus_vel_cpp(SEXP clSEXP, SEXP vlSEXP, SEXP n_arcsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +46,7 @@ END_RCPP
 }
 // init_list_cpp
 Rcpp::List init_list_cpp(Rcpp::StringVector nodes, unsigned int size, unsigned int n_inds);
-RcppExport SEXP _psoho_init_list_cpp(SEXP nodesSEXP, SEXP sizeSEXP, SEXP n_indsSEXP) {
+RcppExport SEXP _natPsoho_init_list_cpp(SEXP nodesSEXP, SEXP sizeSEXP, SEXP n_indsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -70,9 +57,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// one_hot_cpp
+int one_hot_cpp(int nat);
+RcppExport SEXP _natPsoho_one_hot_cpp(SEXP natSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type nat(natSEXP);
+    rcpp_result_gen = Rcpp::wrap(one_hot_cpp(nat));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rename_nodes_cpp
 Rcpp::StringVector rename_nodes_cpp(const Rcpp::StringVector& nodes, unsigned int size);
-RcppExport SEXP _psoho_rename_nodes_cpp(SEXP nodesSEXP, SEXP sizeSEXP) {
+RcppExport SEXP _natPsoho_rename_nodes_cpp(SEXP nodesSEXP, SEXP sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,7 +82,7 @@ END_RCPP
 }
 // randomize_vl_cpp
 Rcpp::List randomize_vl_cpp(Rcpp::List& vl, NumericVector& probs);
-RcppExport SEXP _psoho_randomize_vl_cpp(SEXP vlSEXP, SEXP probsSEXP) {
+RcppExport SEXP _natPsoho_randomize_vl_cpp(SEXP vlSEXP, SEXP probsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -96,7 +94,7 @@ END_RCPP
 }
 // pos_minus_pos_cpp
 Rcpp::List pos_minus_pos_cpp(Rcpp::List& cl, Rcpp::List& ps, Rcpp::List& vl);
-RcppExport SEXP _psoho_pos_minus_pos_cpp(SEXP clSEXP, SEXP psSEXP, SEXP vlSEXP) {
+RcppExport SEXP _natPsoho_pos_minus_pos_cpp(SEXP clSEXP, SEXP psSEXP, SEXP vlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -109,7 +107,7 @@ END_RCPP
 }
 // vel_plus_vel_cpp
 Rcpp::List vel_plus_vel_cpp(Rcpp::List& vl1, Rcpp::List& vl2, int abs_op);
-RcppExport SEXP _psoho_vel_plus_vel_cpp(SEXP vl1SEXP, SEXP vl2SEXP, SEXP abs_opSEXP) {
+RcppExport SEXP _natPsoho_vel_plus_vel_cpp(SEXP vl1SEXP, SEXP vl2SEXP, SEXP abs_opSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -122,7 +120,7 @@ END_RCPP
 }
 // cte_times_vel_cpp
 Rcpp::List cte_times_vel_cpp(float k, Rcpp::List& vl, unsigned int abs_op, int max_op);
-RcppExport SEXP _psoho_cte_times_vel_cpp(SEXP kSEXP, SEXP vlSEXP, SEXP abs_opSEXP, SEXP max_opSEXP) {
+RcppExport SEXP _natPsoho_cte_times_vel_cpp(SEXP kSEXP, SEXP vlSEXP, SEXP abs_opSEXP, SEXP max_opSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -136,20 +134,20 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_psoho_initialize_cl_cpp", (DL_FUNC) &_psoho_initialize_cl_cpp, 2},
-    {"_psoho_create_causlist_cpp", (DL_FUNC) &_psoho_create_causlist_cpp, 4},
-    {"_psoho_cl_to_arc_matrix_cpp", (DL_FUNC) &_psoho_cl_to_arc_matrix_cpp, 3},
-    {"_psoho_pos_plus_vel_cpp", (DL_FUNC) &_psoho_pos_plus_vel_cpp, 3},
-    {"_psoho_init_list_cpp", (DL_FUNC) &_psoho_init_list_cpp, 3},
-    {"_psoho_rename_nodes_cpp", (DL_FUNC) &_psoho_rename_nodes_cpp, 2},
-    {"_psoho_randomize_vl_cpp", (DL_FUNC) &_psoho_randomize_vl_cpp, 2},
-    {"_psoho_pos_minus_pos_cpp", (DL_FUNC) &_psoho_pos_minus_pos_cpp, 3},
-    {"_psoho_vel_plus_vel_cpp", (DL_FUNC) &_psoho_vel_plus_vel_cpp, 3},
-    {"_psoho_cte_times_vel_cpp", (DL_FUNC) &_psoho_cte_times_vel_cpp, 4},
+    {"_natPsoho_create_natcauslist_cpp", (DL_FUNC) &_natPsoho_create_natcauslist_cpp, 3},
+    {"_natPsoho_cl_to_arc_matrix_cpp", (DL_FUNC) &_natPsoho_cl_to_arc_matrix_cpp, 3},
+    {"_natPsoho_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_pos_plus_vel_cpp, 3},
+    {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
+    {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
+    {"_natPsoho_rename_nodes_cpp", (DL_FUNC) &_natPsoho_rename_nodes_cpp, 2},
+    {"_natPsoho_randomize_vl_cpp", (DL_FUNC) &_natPsoho_randomize_vl_cpp, 2},
+    {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
+    {"_natPsoho_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_vel_plus_vel_cpp, 3},
+    {"_natPsoho_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_cte_times_vel_cpp, 4},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_psoho(DllInfo *dll) {
+RcppExport void R_init_natPsoho(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

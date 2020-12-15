@@ -1,5 +1,17 @@
 #include "include/utils.h"
 
+//' One-hot encoder for natural numbers without the 0
+//' 
+//' Given a natural number, return the natural number equivalent to its
+//' one-hot encoding. Instead of pow, the '<<' operator will be used.
+//' Examples: 3 -> 100 -> 4, 5 -> 10000 -> 16
+//' @param nat the natural number to convert
+//' @return the converted number
+// [[Rcpp::export]]
+int one_hot_cpp(int nat){
+  return(1 << (nat - 1));
+}
+
 //' Return a list of nodes with the time slice appended up to the desired size
 //' of the network
 //' 
@@ -21,18 +33,42 @@ Rcpp::StringVector rename_nodes_cpp(const Rcpp::StringVector &nodes, unsigned in
   return res;
 }
 
-// Return the time slice of a node
+// Return the name of the node and its time slice
 // 
 // @param node a string with the name of the node
-// @return an integer with the time slice that the node belongs to
-int find_index(std::string node){
-  std::smatch m;
-  int res;
+// @return a list with the name of the node and an integer with the time slice that the node belongs to
+Rcpp::StringVector find_name_and_index(std::string node){
+  Rcpp::StringVector res (2);
+  std::string delim = "_t_";
+  size_t pos;
   
-  std::regex_match(node, m, std::regex(".*?([0-9]+)$"));
-  res = std::stoi(m.str(m.size() - 1));
+  pos = node.find(delim);
+  res[0] = node.substr(0, pos);
+  res[1] = node.substr(pos + delim.length());
   
   return res;
+}
+
+//' Find the position of the node in the ordering. The node should be findable
+//' in the ordering. If not, an out of bounds index is returned
+//' 
+//' @param ordering a list with the order of the variables in t_0
+//' @param node the desired node
+//' @return the position of the node in the ordering
+int find_index(const Rcpp::StringVector &ordering, std::string node){
+  int i = 0;
+  bool found = false;
+  std::string name;
+  
+  while(i < ordering.size() && !found){
+    name = ordering[i];
+    if(name.find(node) != std::string::npos)
+      found = true;
+    else
+      i++;
+  }
+  
+  return i;
 }
 
 // Modify the names of the nodes to the desired timeslice

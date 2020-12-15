@@ -2,17 +2,17 @@
 #' 
 #' A causality list has a list with causal units, a size representing the
 #' Markovian order of the network and a specific node ordering.
-Position <- R6::R6Class("Position", 
-  inherit = Causlist,
+natPosition <- R6::R6Class("natPosition", 
+  inherit = natCauslist,
   public = list(
     #' @description 
-    #' Constructor of the 'causlist' class
+    #' Constructor of the 'natPosition' class
     #' @param net dbn or dbn.fit object defining the network
-    #' @param size Number of timeslices of the DBN
+    #' @param max_size Maximum number of timeslices of the DBN
     #' @param nodes A list with the names of the nodes in the network
-    #' If its not null, a random causlist will be generated for those nodes
-    #' @return A new 'causlist' object
-    initialize = function(net, size, nodes = NULL){
+    #' If its not null, a random position will be generated for those nodes
+    #' @return A new 'natPosition' object
+    initialize = function(net, max_size, nodes = NULL){
       #initial_size_check(size) --ICO-Merge
       
       if(!is.null(nodes)){
@@ -24,7 +24,7 @@ Position <- R6::R6Class("Position",
         initial_dbn_to_causlist_check(net)
       }
       
-      super$initialize(private$dbn_ordering(net), size)
+      super$initialize(private$dbn_ordering(net))
       private$nodes <- names(net$nodes)
       private$n_arcs <- dim(net$arcs)[1]
       private$cl_translate(net)
@@ -104,7 +104,7 @@ Position <- R6::R6Class("Position",
     #' @param net a dbn object
     #' @return a causlist object
     cl_translate = function(net){
-      private$cl <- create_causlist_cpp(private$cl, net$nodes, private$size, private$ordering)
+      private$cl <- create_natcauslist_cpp(private$cl, net$nodes, private$ordering)
     },
     
     #' @description 
