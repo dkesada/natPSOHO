@@ -106,8 +106,8 @@ Rcpp::List pos_plus_vel_cpp(Rcpp::List &cl, Rcpp::List &vl, int n_arcs){
 // [[Rcpp::export]]
 Rcpp::List init_list_cpp(Rcpp::StringVector nodes, unsigned int size, unsigned int n_inds){
   Rcpp::List res (n_inds);
-  Environment psoho("package:psoho");
-  Environment env = psoho["Position"];
+  Environment psoho("package:natPsoho");
+  Environment env = psoho["natPosition"];
   Function new_ps = env["new"];
   
   for(unsigned int i = 0; i < n_inds; i++){

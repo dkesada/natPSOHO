@@ -1,4 +1,4 @@
 library(testthat)
-library(psoho)
+library(natPsoho)
 
-test_check("psoho")
+test_check("natPsoho")

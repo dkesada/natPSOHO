@@ -2,4 +2,4 @@
 
 export(learn_dbn_structure_pso)
 importFrom(Rcpp,sourceCpp)
-useDynLib(psoho)
+useDynLib(natPsoho)

@@ -6,42 +6,42 @@ output: html_document
 # Random generation of a network, sampling of a dataset and network score testing 
 
 ```{r init}
-library(psoho)
-library(bnlearn)
-library(data.table)
+# library(psoho)
+# library(bnlearn)
+# library(data.table)
 ```
 
 ```{r generation}
-ordering <- c("A", "B", "C", "D", "E")
-size <- 3
-
-set.seed(42)
-
-struct <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][D_t_2][E_t_2][A_t_1][B_t_1][C_t_1][D_t_1][E_t_1][A_t_0|C_t_2:B_t_1][B_t_0|C_t_2:E_t_2:A_t_1][C_t_0|B_t_1:C_t_1][D_t_0|A_t_2:D_t_1][E_t_0|D_t_2:A_t_1:C_t_1:D_t_1]")
-
-dt = data.table(A_t_2 = rnorm(10000, 2.9, 2.7),
-               B_t_2 = rnorm(10000, 1.2, 0.3),
-               C_t_2 = rnorm(10000, 1.2, 1.9),
-               D_t_2 = rnorm(10000, 3.7, 1.5),
-               E_t_2 = rnorm(10000, 1.7, 0.6),
-               A_t_1 = rnorm(10000, 2.8, 2.6),
-               B_t_1 = rnorm(10000, 1.3, 0.5),
-               C_t_1 = rnorm(10000, 1.5, 2),
-               D_t_1 = rnorm(10000, 3.6, 1.6),
-               E_t_1 = rnorm(10000, 1.7, 0.7),
-               A_t_0 = rnorm(10000, 2.8, 2.6),
-               B_t_0 = rnorm(10000, 1.3, 0.5),
-               C_t_0 = rnorm(10000, 1.5, 2),
-               D_t_0 = rnorm(10000, 3.6, 1.6),
-               E_t_0 = rnorm(10000, 1.7, 0.7))
-
-dt[, A_t_0 := A_t_0 + (-0.29) * C_t_2 + 1.3 * B_t_1]
-dt[, B_t_0 := B_t_0 + 0.14 * C_t_2 + 0.87 * E_t_2 + (-0.7) * A_t_1]
-dt[, C_t_0 := C_t_0 + 1.3 * C_t_1 + -(0.3) * B_t_1]
-dt[, D_t_0 := D_t_0 + 0.37 * A_t_2 + 1.1 * D_t_1]
-dt[, E_t_0 := E_t_0 + 0.21 * D_t_2 + 0.63 * A_t_1 + (-0.7) * C_t_1 + 0.2 * D_t_1]
-
-print(bnlearn::score(struct, dt, type = "bge"))
+# ordering <- c("A", "B", "C", "D", "E")
+# size <- 3
+# 
+# set.seed(42)
+# 
+# struct <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][D_t_2][E_t_2][A_t_1][B_t_1][C_t_1][D_t_1][E_t_1][A_t_0|C_t_2:B_t_1][B_t_0|C_t_2:E_t_2:A_t_1][C_t_0|B_t_1:C_t_1][D_t_0|A_t_2:D_t_1][E_t_0|D_t_2:A_t_1:C_t_1:D_t_1]")
+# 
+# dt = data.table(A_t_2 = rnorm(10000, 2.9, 2.7),
+#                B_t_2 = rnorm(10000, 1.2, 0.3),
+#                C_t_2 = rnorm(10000, 1.2, 1.9),
+#                D_t_2 = rnorm(10000, 3.7, 1.5),
+#                E_t_2 = rnorm(10000, 1.7, 0.6),
+#                A_t_1 = rnorm(10000, 2.8, 2.6),
+#                B_t_1 = rnorm(10000, 1.3, 0.5),
+#                C_t_1 = rnorm(10000, 1.5, 2),
+#                D_t_1 = rnorm(10000, 3.6, 1.6),
+#                E_t_1 = rnorm(10000, 1.7, 0.7),
+#                A_t_0 = rnorm(10000, 2.8, 2.6),
+#                B_t_0 = rnorm(10000, 1.3, 0.5),
+#                C_t_0 = rnorm(10000, 1.5, 2),
+#                D_t_0 = rnorm(10000, 3.6, 1.6),
+#                E_t_0 = rnorm(10000, 1.7, 0.7))
+# 
+# dt[, A_t_0 := A_t_0 + (-0.29) * C_t_2 + 1.3 * B_t_1]
+# dt[, B_t_0 := B_t_0 + 0.14 * C_t_2 + 0.87 * E_t_2 + (-0.7) * A_t_1]
+# dt[, C_t_0 := C_t_0 + 1.3 * C_t_1 + -(0.3) * B_t_1]
+# dt[, D_t_0 := D_t_0 + 0.37 * A_t_2 + 1.1 * D_t_1]
+# dt[, E_t_0 := E_t_0 + 0.21 * D_t_2 + 0.63 * A_t_1 + (-0.7) * C_t_1 + 0.2 * D_t_1]
+# 
+# print(bnlearn::score(struct, dt, type = "bge"))
 
 ```
 
@@ -49,22 +49,22 @@ A network representing the real structure that generated the data obtains a bge 
 
 ```{r psoho}
 
-eval_sol <- function(real, sol){
-  real_arcs <- apply(real$arcs, 1, function(x){paste0(x[1], x[2])})
-  sol_arcs <- apply(sol$arcs, 1, function(x){paste0(x[1], x[2])})
-  
-  print(paste0("Number of real arcs: ", length(real_arcs)))
-  print(paste0("Number of real arcs in solution: ", sum(real_arcs %in% sol_arcs)))
-  print(paste0("Total number of arcs in solution: ", length(sol_arcs)))
-}
-
-a <- Sys.time()
-res <- psoho::learn_dbn_structure_pso(dt, size, n_inds = 200, n_it = 10,
-                                      in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
-                                      v_probs = c(10, 65, 25), r_probs = c(-0.5, 1.5))
-eval_sol(struct, res)
-print(Sys.time() - a)
-print(bnlearn::score(res, dt, type = "bge"))
+# eval_sol <- function(real, sol){
+#   real_arcs <- apply(real$arcs, 1, function(x){paste0(x[1], x[2])})
+#   sol_arcs <- apply(sol$arcs, 1, function(x){paste0(x[1], x[2])})
+#   
+#   print(paste0("Number of real arcs: ", length(real_arcs)))
+#   print(paste0("Number of real arcs in solution: ", sum(real_arcs %in% sol_arcs)))
+#   print(paste0("Total number of arcs in solution: ", length(sol_arcs)))
+# }
+# 
+# a <- Sys.time()
+# res <- psoho::learn_dbn_structure_pso(dt, size, n_inds = 200, n_it = 10,
+#                                       in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
+#                                       v_probs = c(10, 65, 25), r_probs = c(-0.5, 1.5))
+# eval_sol(struct, res)
+# print(Sys.time() - a)
+# print(bnlearn::score(res, dt, type = "bge"))
 ```
 
 Getting the learned network to have only exactly the real arcs is very difficult because a network with only the 13 correct arcs has a fitness of -237911.3 and one with those 13 arcs and 7 additional ones has a fitness of -237951. Overall, those additional false positives are not too agravating and don't create a dense network, given that this network can have a maximum of 50 arcs. 

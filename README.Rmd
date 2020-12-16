@@ -9,71 +9,14 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.path = "README-")
 ```
 
-# PSOHO
+# natPsoho
 
-This package implements the particle swarm optimization structure learning algorithm for higher-order dynamic Bayesian networks from Santos and Maciel (https://doi.org/10.1109/BRC.2014.6880957). It will start off as an independent module and most likely will be incorporated into the 'dbnR' package. My objective is to provide the 'dbnR' package with some state-of-the-art methods of DBN structure learning, both for comparison with new methods and to give the current DBN scene richer alternatives than the usual "pick a static structure learning algorithm and run it twice: one to build the static structure and one to build the transition structure".
+This is an extension of the particle swarm optimization structure learning algorithm for higher-order dynamic Bayesian networks from Santos and Maciel (https://doi.org/10.1109/BRC.2014.6880957) to an integer number encoding that supports multiple orders at the same time. The original algorithm can be found in both the dbnR package and in (https://github.com/dkesada/PSOHO). I couldn't fork my own repository with the implementation for the original algorithm, so I imported it into a new one. I will use it as a template and extend it to the integer number encoding.
 
-On a personal note, this repository will also serve me as a first serious approach to PSO and to R6 objects, both of which I've been meaning to invest some time in for a while now. 
+The main objective of this new encoding is to be able to learn the appropiate Markovian order of the network and the structure at the same time instead of having to fix the order beforehand. In this extension, you can fix a maximum order and the algorithm will search structures up to that point. The new encoding offers integer number vectors whose size only depend on the number of variables in t0, not on the order of the network. It also offers a way to favor smaller orders by fixing a geometric distribution that defines how often higher order arcs are added.
 
-Now that the implementation of the algorithm is finished and it has been included in the ‘dbnR’ package, further development in this repository will be halted. The final performance is quite good, and I gained some valuable insights on R6 objects and parallelization in R and C++. It also offers an alternative to the classic DMMHC structure learning algorithm.
+## Some conclusions and remarks
 
-## Some conclusions
+### Similarities with the binary case
 
-### Roxygen2 + R6
-Roxygen's interaction with R6 objects is kind of wonky. It kind of works, but at the same time it kind of doesn't. You can document R6 objects, but when you are bulding the documentation of the classes and their methods it showers you with warnings. Afterwards, you get the tooltips for the constructor of the class and the methods all mixed up, and when you are calling a method from an instantiated object you get no helping tooltip at all.
-
-![alt text](https://raw.githubusercontent.com/dkesada/psoho/master/media/r6_roxygen.png)
-
-### Rcpp inside R6 objects
-Incorporating Rcpp inside R6 objects is as straightforward as it looks. No problems in that regard.
-
-### Creating R6 objects from C++
-You can call R code from within C++, and you can do some interesting stuff by calling and creating R6 objects from C++, although it's kind of weird:
-
-```{Rcpp creating R6 objects, eval = FALSE}
-// [[Rcpp::export]]
-Rcpp::List init_list_cpp(Rcpp::StringVector nodes, unsigned int size, unsigned int n_inds){
-  Rcpp::List res (n_inds);
-  Environment psoho("package:psoho");
-  Environment env = psoho["Position"];
-  Function new_ps = env["new"];
-  
-  for(unsigned int i = 0; i < n_inds; i++){
-    Environment ps;
-    ps = new_ps(NULL, size, nodes);
-    res[i] = ps;
-  }
-  
-  return res;
-}
-```
-
-The previous function initializes a list of Positions, an R6 object, from within C++. The main idea is that R6 objects are essentially environments, and so you can import the function to create them from your package and then call it. This was cool, not gonna lie.
-
-### Discrete search space and the 'pso' package
-Given that I have specific operators for Positions and Velocities and my search space is not continuous, I can't use packages like 'pso' for the particle swarm main functionallity. It's a good thing that a relatively 'naive' implementation of a pso algorithm is also relatively easy to code.
-
-### R parallelization: 'foreach' and 'parLapply'
-Using 'foreach' for the first particles initialization results in awful performance, maybe due to combining the results with the 'c' operator.
-
-The 'parLapply' function works much more efficiently than the 'foreach' with %dopar% in this case. This is even more so if you are in unix systems and can use FORK as the type of cluster. The 'doMC' approach is equivalent to this one.
-
-Improvement in performance can be seen, on a general note, for networks with 20+ variables in each time slice, populations with more than 200 particles, or networks with Markovian order greater than 5. In smaller cases, the performance is either very similar or slightly worse, which is alright.
-
-Trying parallelization inside the PsoController ended up being painfully slow. The interaction between R6 objects and parallelization inside them results in weird performance.
-
-As a heads up, one should not use parallelization in R when:
-
-* Trying to initialize a list or some other data structure, as functions like 'foreach' and 'parlapply' cannot modify the original data structure and will copy it several times across workers. Trying to modify this local copies will not have any effect on the original data structure. You can try and return the values, but it's slow and the consequent concatenation will make your initial data structure kind of useless and duplicated.
-
-* Trying to do simple operations. The time spent on the parallel overhead will be way too high compared to the time spent simply doing those operations sequentially.
-
-* Trying to parallelize a loop that loops over too many elements. The performance degrades even further.
-
-On final note, parallelization is way more effective when you can do forks. But then again, forks are not recommended for code in production, as they can be unstable and hard to debug. So, all in all, meh.
-
-### C++ parallelization: 'RcppThread' | 'RcppParallel' + R and Rcpp
-The 'RcppThread' and 'RcppParallel' packages seem interesting, but combining them with calls to R or Rcpp APIs (e.g. Rcpp::List) ends up in unavoidable (and unpredictable) R session crashes. They should both be used with thread-safe data structures, and Rcpp's ones are not. I also tried creating R6 objects in parallel before noticing this, which also resulted in obvious session crashes. At best you get unstable performance: sometimes it works, sometimes you get stack imbalances because the garbage collector goes kind of crazy on your non-thread-safe data structures, and in the end it crashes at some point. 
-
-If you plan on using parallel computing in C++, **you should plan ahead to only use thread-safe data structures**. Unless I'm doing some pure C++ computations, I'll probably leave C++ parallelization out of this project. I'm itching to try it in some other project, though.
-
+The new encoding is similar to the binary case in that the integer vectors can be translated into binary ones with some maximum order and it could be argued that both approaches are equivalent. However, the integer representation of positions and velocities offers the advantage that there is really no need to fix any order or any maximum order. The maximum order is useful to perform the search in a promising espace rather than exactly that of the given Markovian order. Also, the addition of different probabilities to add arcs depending on the order prevents the network from freely searching in a bigger search space in favor of graphs with more populated lower orders.

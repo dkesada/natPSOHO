@@ -1,3 +1,3 @@
-#' @useDynLib psoho
+#' @useDynLib natPsoho
 #' @importFrom Rcpp sourceCpp
 NULL

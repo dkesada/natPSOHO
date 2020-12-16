@@ -49,12 +49,12 @@ Rcpp::StringVector find_name_and_index(std::string node){
   return res;
 }
 
-//' Find the position of the node in the ordering. The node should be findable
-//' in the ordering. If not, an out of bounds index is returned
-//' 
-//' @param ordering a list with the order of the variables in t_0
-//' @param node the desired node
-//' @return the position of the node in the ordering
+// Find the position of the node in the ordering. The node should be findable
+// in the ordering. If not, an out of bounds index is returned
+// 
+// @param ordering a list with the order of the variables in t_0
+// @param node the desired node
+// @return the position of the node in the ordering
 int find_index(const Rcpp::StringVector &ordering, std::string node){
   int i = 0;
   bool found = false;

@@ -41,14 +41,6 @@ init_list_cpp <- function(nodes, size, n_inds) {
     .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', nodes, size, n_inds)
 }
 
-#' Find the position of the node in the ordering. The node should be findable
-#' in the ordering. If not, an out of bounds index is returned
-#' 
-#' @param ordering a list with the order of the variables in t_0
-#' @param node the desired node
-#' @return the position of the node in the ordering
-NULL
-
 #' One-hot encoder for natural numbers without the 0
 #' 
 #' Given a natural number, return the natural number equivalent to its
