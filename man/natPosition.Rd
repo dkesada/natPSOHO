@@ -4,20 +4,22 @@
 \alias{natPosition}
 \title{R6 class that defines DBNs as causality lists}
 \arguments{
-\item{max_size}{Maximum number of timeslices of the DBN}
+\item{nodes}{A list with the names of the nodes in t_0 in the network
+If its not null, a random position will be generated for those nodes.}
 
 \item{vl}{a Velocity object}
 
 \item{ps}{a Position object
 return the Velocity that gets this position to the new one}
 
-\item{nodes}{a character vector with the names of the nodes in the net}
+\item{net}{a dbn object}
 
-\item{size}{the desired size of the DBN}
+\item{n_vars}{the number of variables in t_0}
 
-\item{net}{the DBN structure}
+\item{max_size}{the maximum size of the DBN}
 
-\item{nodes_t_0}{a vector with the names of the nodes in t_0}
+\item{p}{the parameter of the truncated geometric sampler. If lesser or
+equal to 0, a uniform distribution will be used instead.}
 }
 \value{
 A new 'natPosition' object
@@ -28,9 +30,9 @@ the ordering of the nodes in t_0
 
 a causlist object
 
-a random dbn structure
+a random position
 
-the fixed network
+the number of arcs
 }
 \description{
 Constructor of the 'natPosition' class
@@ -58,15 +60,15 @@ This function takes as input a network from a DBN and transforms the
 structure into a causality list if it is a valid DBN. Valid DBNs have only
 inter-timeslice edges and only allow variables in t_0 to have parents.
 
-Generates a random DBN valid for causality list translation
+Generates a random position
 
-This function takes as input a list with the names of the nodes and the
-desired size of the network and returns a random DBN structure.
+This function takes as input the number of variables, the maximum size
+and the parameter p and returns a random position with arcs 
+sampled either from the uniform distribution or from a truncated 
+geometric distribution. Much faster than the binary implementation with
+lists of lists and random bn generation into translation.
 
-Fixes a DBN structure to make it suitable for causality list translation
-
-This function takes as input a DBN structure and removes the 
-intra-timeslice arcs and the arcs that end in a node not in t_0.
+Recount the number of arcs in the cl
 }
 \details{
 A causality list has a list with causal units, a size representing the
@@ -77,6 +79,8 @@ Markovian order of the network and a specific node ordering.
 \describe{
 \item{\code{n_arcs}}{Number of arcs in the network}
 
-\item{\code{nodes}}{Names of the nodes in the network}
+\item{\code{max_size}}{Maximum number of timeslices of the DBN}
+
+\item{\code{p}}{Parameter of the sampling truncated geometric distribution}
 }}
 

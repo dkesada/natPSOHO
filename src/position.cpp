@@ -42,6 +42,8 @@ Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(Rcpp::List &cl, Rcpp::CharacterVector
   Rcpp::StringVector nodes;
   Rcpp::NumericVector arcs;
   
+ // TODO
+  
   for(unsigned int i = 0; i < cl.size(); i++){
     slice = cl[i];
     for(unsigned int j = 0; j < ordering.size(); j++){

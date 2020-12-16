@@ -9,30 +9,34 @@ natPosition <- R6::R6Class("natPosition",
     #' Constructor of the 'natPosition' class
     #' @param net dbn or dbn.fit object defining the network
     #' @param max_size Maximum number of timeslices of the DBN
-    #' @param nodes A list with the names of the nodes in the network
-    #' If its not null, a random position will be generated for those nodes
+    #' @param nodes A list with the names of the nodes in t_0 in the network
+    #' If its not null, a random position will be generated for those nodes.
+    #' @param p the parameter of the sampling truncated geometric distribution
+    #' If lesser or equal to 0, a uniform distribution will be used instead. 
     #' @return A new 'natPosition' object
-    initialize = function(net, max_size, nodes = NULL){
+    initialize = function(net, max_size, nodes = NULL, p = 0.06){
       #initial_size_check(size) --ICO-Merge
       
       if(!is.null(nodes)){
         #initial_nodes_check(nodes)
-        net <- private$generate_random_network(nodes, size)
+        super$initialize(nodes)
+        private$cl <- private$generate_random_position(length(nodes), max_size, p)
+        private$n_arcs <- private$recount_arcs()
+        
       }
       else{
         #initial_dbn_check(net) --ICO-Merge
         initial_dbn_to_causlist_check(net)
+        super$initialize(private$dbn_ordering(net))
+        private$n_arcs <- dim(net$arcs)[1]
+        private$cl_translate(net)
       }
       
-      super$initialize(private$dbn_ordering(net))
-      private$nodes <- names(net$nodes)
-      private$n_arcs <- dim(net$arcs)[1]
-      private$cl_translate(net)
+      private$max_size <- max_size
+      private$p <- p
     },
     
     get_n_arcs = function(){return(private$n_arcs)},
-    
-    get_nodes = function(){return(private$nodes)},
     
     #' @description 
     #' Translate the causality list into a DBN network
@@ -80,8 +84,10 @@ natPosition <- R6::R6Class("natPosition",
   private = list(
     #' @field n_arcs Number of arcs in the network
     n_arcs = NULL,
-    #' @field nodes Names of the nodes in the network
-    nodes = NULL,
+    #' @field max_size Maximum number of timeslices of the DBN
+    max_size = NULL,
+    #' @field p Parameter of the sampling truncated geometric distribution
+    p = NULL,
     
     #' @description 
     #' Return the static node ordering
@@ -108,46 +114,42 @@ natPosition <- R6::R6Class("natPosition",
     },
     
     #' @description 
-    #' Generates a random DBN valid for causality list translation
+    #' Generates a random position
     #' 
-    #' This function takes as input a list with the names of the nodes and the
-    #' desired size of the network and returns a random DBN structure.
-    #' @param nodes a character vector with the names of the nodes in the net
-    #' @param size the desired size of the DBN
-    #' @return a random dbn structure
-    generate_random_network = function(nodes, size){
-      idx <- grep("t_0", nodes)
+    #' This function takes as input the number of variables, the maximum size
+    #' and the parameter p and returns a random position with arcs 
+    #' sampled either from the uniform distribution or from a truncated 
+    #' geometric distribution. Much faster than the binary implementation with
+    #' lists of lists and random bn generation into translation.
+    #' @param n_vars the number of variables in t_0
+    #' @param max_size the maximum size of the DBN
+    #' @param p the parameter of the truncated geometric sampler. If lesser or
+    #' equal to 0, a uniform distribution will be used instead.
+    #' @return a random position
+    generate_random_position = function(n_vars, max_size, p){
+      res <- rep(0, n_vars * n_vars)
       
-      if(length(idx) == 0){
-        nodes_t_0 <- unlist(lapply(nodes, function(x){paste0(x, "_t_0")}))
-        new_nodes <- rename_nodes_cpp(nodes, size)
+      if(p <= 0){
+        res <- floor(runif(n_vars * n_vars, 0, max_size + 1))
       }
+      
       else{
-        nodes_t_0 <- names(dt)[idx]
-        new_nodes <- c(names(dt)[-idx], nodes_t_0)
+        for(i in 1:length(res))
+          res[i] <- trunc_geom(p, max_size)
       }
       
-      net <- bnlearn::random.graph(new_nodes)
-      net <- private$prune_invalid_arcs(net, nodes_t_0)
-      
-      return(net)
+      return(res)
     },
     
     #' @description 
-    #' Fixes a DBN structure to make it suitable for causality list translation
-    #' 
-    #' This function takes as input a DBN structure and removes the 
-    #' intra-timeslice arcs and the arcs that end in a node not in t_0.
-    #' @param net the DBN structure
-    #' @param nodes_t_0 a vector with the names of the nodes in t_0
-    #' @return the fixed network
-    prune_invalid_arcs = function(net, nodes_t_0){
-      keep_rows <- !(net$arcs[,1] %in% nodes_t_0)
-      keep_rows <- keep_rows & (net$arcs[,2] %in% nodes_t_0)
-      keep_rows <- net$arcs[keep_rows,]
-      bnlearn::arcs(net) <- keep_rows
+    #' Recount the number of arcs in the cl
+    #' @return the number of arcs
+    recount_arcs = function(){
+      res <- 0
+      for(i in 1:length(private$cl))
+        res <- res + count_bits(private$cl[i])
       
-      return(net)
+      return(res)
     }
     
   )
