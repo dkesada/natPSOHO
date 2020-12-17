@@ -12,6 +12,7 @@ using namespace Rcpp;
 
 int one_hot_cpp(int nat);
 Rcpp::StringVector find_name_and_index(std::string node);
+void include_arc(Rcpp::StringMatrix &res, const Rcpp::StringVector &ordering, int i, int j, int &k);
 int find_index(const Rcpp::StringVector &ordering, std::string node);
 Rcpp::StringVector rename_nodes_cpp(Rcpp::StringVector &nodes, unsigned int size);
 Rcpp::StringVector rename_slices(const Rcpp::StringVector &nodes, unsigned int slice);

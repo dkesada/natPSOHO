@@ -20,6 +20,9 @@ natPosition <- R6::R6Class("natPosition",
       if(!is.null(nodes)){
         #initial_nodes_check(nodes)
         super$initialize(nodes)
+        tmp <- matrix(0, nrow = max_size, ncol = length(nodes))
+        colnames(tmp) <- nodes
+        private$nodes <- names(dbnR::fold_dt(as.data.frame(tmp), max_size))
         private$cl <- private$generate_random_position(length(nodes), max_size, p)
         private$n_arcs <- private$recount_arcs()
         
@@ -28,6 +31,7 @@ natPosition <- R6::R6Class("natPosition",
         #initial_dbn_check(net) --ICO-Merge
         initial_dbn_to_causlist_check(net)
         super$initialize(private$dbn_ordering(net))
+        private$nodes <- names(net$nodes)
         private$n_arcs <- dim(net$arcs)[1]
         private$cl_translate(net)
       }
@@ -44,7 +48,7 @@ natPosition <- R6::R6Class("natPosition",
     #' Uses this object private causality list and transforms it into a DBN.
     #' @return a dbn object
     bn_translate = function(){
-      arc_mat <- cl_to_arc_matrix_cpp(private$cl, private$ordering, private$n_arcs)
+      arc_mat <- cl_to_arc_matrix_cpp(private$cl, private$ordering_raw, private$n_arcs)
       
       net <- bnlearn::empty.graph(private$nodes)
       bnlearn::arcs(net) <- arc_mat
@@ -88,6 +92,8 @@ natPosition <- R6::R6Class("natPosition",
     max_size = NULL,
     #' @field p Parameter of the sampling truncated geometric distribution
     p = NULL,
+    #' @field nodes Names of the nodes in the network
+    nodes = NULL,
     
     #' @description 
     #' Return the static node ordering

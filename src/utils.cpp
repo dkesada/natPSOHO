@@ -49,6 +49,22 @@ Rcpp::StringVector find_name_and_index(std::string node){
   return res;
 }
 
+void include_arc(Rcpp::StringMatrix &res, const Rcpp::StringVector &ordering, int i, int j, int &k){
+  std::string from, to;
+  int from_idx, to_idx;
+  
+  to_idx = i / ordering.size();
+  to = ordering[to_idx];
+  to += "_t_0";
+  from_idx = i % ordering.size();
+  from = ordering[from_idx];
+  from += "_t_" + std::to_string(j);
+  
+  res(k, 0) = from;
+  res(k, 1) = to;
+  k++;
+}
+
 // Find the position of the node in the ordering. The node should be findable
 // in the ordering. If not, an out of bounds index is returned
 // 

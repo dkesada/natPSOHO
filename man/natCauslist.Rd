@@ -8,9 +8,13 @@
 }
 \value{
 A new 'natCauslist' object
+
+the ordering with the names cropped
 }
 \description{
 Constructor of the 'natCauslist' class
+
+If the names of the nodes have "_t_0" appended at the end, remove it
 }
 \details{
 The causal lists will be the base of the positions and the velocities
@@ -23,6 +27,8 @@ base.
 \describe{
 \item{\code{cl}}{List of causal units}
 
-\item{\code{ordering}}{String vector defining the order of the nodes in a timeslice}
+\item{\code{ordering}}{String vector defining the order of the nodes in t_0}
+
+\item{\code{ordering}}{String vector defining the order of the nodes without the appended "_t_0"}
 }}
 

@@ -82,5 +82,7 @@ Markovian order of the network and a specific node ordering.
 \item{\code{max_size}}{Maximum number of timeslices of the DBN}
 
 \item{\code{p}}{Parameter of the sampling truncated geometric distribution}
+
+\item{\code{nodes}}{Names of the nodes in the network}
 }}
 

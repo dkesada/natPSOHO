@@ -14,7 +14,7 @@ cl_to_arc_matrix_cpp(cl, ordering, rows)
 \item{rows}{number of arcs in the network}
 }
 \value{
-a list with a CharacterVector and a NumericVector
+a StringMatrix with the parent nodes and the children nodes
 }
 \description{
 Create a matrix with the arcs defined in a causlist object

@@ -19,22 +19,22 @@ test_that("random network generation works", {
   expect_equal(ps$get_cl(), res)
 })
 
-# TODO
-# test_that("translation from Position to bn works", {
-#   net <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][A_t_1][B_t_1][C_t_1][A_t_0|A_t_1:B_t_2:C_t_1][B_t_0|A_t_1:B_t_1][C_t_0|B_t_2:C_t_2]")
-#   class(net) <- c("dbn", class(net))
-#   size <- 3
-# 
-#   ps <- natPosition$new(net, size)
-#   res_net <- ps$bn_translate()
-# 
-#   res <- apply(net$arcs, 1, function(x){paste0(x[1], x[2])})
-#   res_net <- apply(res_net$arcs, 1, function(x){paste0(x[1], x[2])})
-# 
-# 
-#   expect_setequal(res_net, res)
-# })
-# 
+
+test_that("translation from Position to bn works", {
+  net <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][A_t_1][B_t_1][C_t_1][A_t_0|A_t_1:B_t_2:C_t_1][B_t_0|A_t_1:B_t_1][C_t_0|B_t_2:C_t_2]")
+  class(net) <- c("dbn", class(net))
+  size <- 3
+
+  ps <- natPosition$new(net, size)
+  res_net <- ps$bn_translate()
+
+  res <- apply(net$arcs, 1, function(x){paste0(x[1], x[2])})
+  res_net <- apply(res_net$arcs, 1, function(x){paste0(x[1], x[2])})
+
+
+  expect_setequal(res_net, res)
+})
+
 # test_that("position plus velocity works", {
 #   net <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][A_t_1][B_t_1][C_t_1][A_t_0|A_t_1:B_t_2:C_t_1][B_t_0|A_t_1:B_t_1][C_t_0|B_t_2:C_t_2]")
 #   class(net) <- c("dbn", class(net))

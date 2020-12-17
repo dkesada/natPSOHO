@@ -4,7 +4,7 @@
 //' 
 //' @param cl an initialized causality list
 //' @param net a dbn object treated as a list of lists
-//' @param ordering a list with the order of the variables in t_0
+//' @param ordering a vector with the names of the variables in order
 //' @return the natCauslist equivalent to the DBN
 // [[Rcpp::export]]
 Rcpp::NumericVector create_natcauslist_cpp(Rcpp::NumericVector &cl, Rcpp::List &net, StringVector &ordering) {
@@ -32,31 +32,25 @@ Rcpp::NumericVector create_natcauslist_cpp(Rcpp::NumericVector &cl, Rcpp::List &
 //' @param cl a causal list
 //' @param ordering a list with the order of the variables in t_0
 //' @param rows number of arcs in the network
-//' @return a list with a CharacterVector and a NumericVector
+//' @return a StringMatrix with the parent nodes and the children nodes
 // [[Rcpp::export]]
-Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(Rcpp::List &cl, Rcpp::CharacterVector &ordering,
+Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(const Rcpp::NumericVector &cl, Rcpp::CharacterVector &ordering,
                                            unsigned int rows){
   Rcpp::StringMatrix res (rows, 2);
-  unsigned int res_row = 0;
-  Rcpp::List slice, cu;
-  Rcpp::StringVector nodes;
-  Rcpp::NumericVector arcs;
-  
- // TODO
+  int slice, j, k;
+  k = 0;
   
   for(unsigned int i = 0; i < cl.size(); i++){
     slice = cl[i];
-    for(unsigned int j = 0; j < ordering.size(); j++){
-      cu = slice[j];
-      nodes = cu[0];
-      arcs = cu[1];
-      for(unsigned int k = 0; k < nodes.size(); k++){
-        if(arcs[k] == 1){
-          res(res_row, 0) = nodes[k];
-          res(res_row, 1) = ordering[j];
-          res_row += 1;
-        }
+    j = 1;
+
+    while(slice > 0){
+      if(slice % 2 == 1){
+        include_arc(res, ordering, i, j, k);
       }
+      
+      slice = slice >> 1;
+      j++;
     }
   }
   

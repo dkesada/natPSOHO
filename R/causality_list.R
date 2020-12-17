@@ -14,6 +14,7 @@ natCauslist <- R6::R6Class("Causlist",
       #initial_size_check(size) --ICO-Merge
       
       private$ordering <- ordering
+      private$ordering_raw <- private$crop_names(ordering)
       private$cl <- rep(0, length(ordering) * length(ordering))
     },
     
@@ -25,7 +26,17 @@ natCauslist <- R6::R6Class("Causlist",
   private = list(
     #' @field cl List of causal units
     cl = NULL,
-    #' @field ordering String vector defining the order of the nodes in a timeslice
-    ordering = NULL
+    #' @field ordering String vector defining the order of the nodes in t_0
+    ordering = NULL,
+    #' @field ordering String vector defining the order of the nodes without the appended "_t_0"
+    ordering_raw = NULL,
+    
+    #' @description 
+    #' If the names of the nodes have "_t_0" appended at the end, remove it
+    #' @param ordering a vector with the names of the nodes in t_0
+    #' @return the ordering with the names cropped
+    crop_names = function(ordering){
+      sapply(ordering, function(x){gsub("_t_0", "", x)}, USE.NAMES = F)
+    }
   )
 )

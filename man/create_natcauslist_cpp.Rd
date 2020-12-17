@@ -11,7 +11,7 @@ create_natcauslist_cpp(cl, net, ordering)
 
 \item{net}{a dbn object treated as a list of lists}
 
-\item{ordering}{a list with the order of the variables in t_0}
+\item{ordering}{a vector with the names of the variables in order}
 }
 \value{
 the natCauslist equivalent to the DBN

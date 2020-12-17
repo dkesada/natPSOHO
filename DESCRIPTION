@@ -14,6 +14,7 @@ License: MIT + file LICENSE
 Depends: R (>= 3.5.0)
 Imports: Rcpp (>= 1.0.4),
   bnlearn (>= 4.5),
+  dbnR (>= 0.5.3),
   R6 (>= 2.4.1),
   utils (>= 3.5.0)
 LinkingTo: Rcpp

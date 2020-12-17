@@ -5,7 +5,7 @@
 #' 
 #' @param cl an initialized causality list
 #' @param net a dbn object treated as a list of lists
-#' @param ordering a list with the order of the variables in t_0
+#' @param ordering a vector with the names of the variables in order
 #' @return the natCauslist equivalent to the DBN
 create_natcauslist_cpp <- function(cl, net, ordering) {
     .Call('_natPsoho_create_natcauslist_cpp', PACKAGE = 'natPsoho', cl, net, ordering)
@@ -16,7 +16,7 @@ create_natcauslist_cpp <- function(cl, net, ordering) {
 #' @param cl a causal list
 #' @param ordering a list with the order of the variables in t_0
 #' @param rows number of arcs in the network
-#' @return a list with a CharacterVector and a NumericVector
+#' @return a StringMatrix with the parent nodes and the children nodes
 cl_to_arc_matrix_cpp <- function(cl, ordering, rows) {
     .Call('_natPsoho_cl_to_arc_matrix_cpp', PACKAGE = 'natPsoho', cl, ordering, rows)
 }
