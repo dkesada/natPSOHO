@@ -4,9 +4,20 @@
 #' a causal unit is a pair (v, node) with v being either 0, 1 or -1. 0 means 
 #' that arc remained the same, 1 means that arc was added and -1 means that arc 
 #' was deleted.
-Velocity <- R6::R6Class("Velocity",
-  inherit = Causlist,
+natVelocity <- R6::R6Class("natVelocity",
+  inherit = natCauslist,
   public = list(
+    #' @description 
+    #' Constructor of the 'natVelocity' class. Only difference with the
+    #' natCauslist one is that it has a negative cl attribute.
+    #' @param ordering a vector with the names of the nodes in t_0
+    #' @return A new 'natVelocity' object
+    initialize = function(ordering, max_size){
+      super$initialize(ordering)
+      private$cl_neg <- private$cl
+      private$max_size <- max_size
+    },
+    
     #' @description 
     #' Getter of the abs_op attribute.
     #' 
@@ -28,11 +39,24 @@ Velocity <- R6::R6Class("Velocity",
     #' 
     #' @param probs the weight of each value {-1,0,1}. They define the probability that each of them will be picked 
     #' @param seed the seed provided to the random number generation
-    randomize_velocity = function(probs = c(10, 65, 25)){
+    randomize_velocity = function(probs = c(10, 65, 25), p = 0.06){
       numeric_prob_vector_check(probs)
-      directions <- randomize_vl_cpp(private$cl, probs)
+      
+      for(i in 1:length(private$cl)){
+        op <- rmultinom(n = 1, size = 1, prob = probs)
+        if(op[3] == 1){
+          private$cl[i] <- trunc_geom(p, private$max_size)
+          private$abs_op <- private$abs_op + count_bits(private$cl[i])
+        }
+        else if (op[1] == 1){
+          private$cl_neg[i] <- trunc_geom(p, private$max_size)
+          private$abs_op <- private$abs_op + count_bits(private$cl_neg[i])
+        }
+      }
+      
       private$cl <- directions[[1]]
-      private$abs_op <- directions[[2]]
+      private$cl_neg <- directions[[2]]
+      private$abs_op <- directions[[3]]
     },
     
     #' @description 
@@ -91,6 +115,8 @@ Velocity <- R6::R6Class("Velocity",
   ),
   private = list(
     #' @field abs_op Total number of operations 1 or -1 in the velocity
-    abs_op = NULL
+    abs_op = NULL,
+    #' @field cl_neg Negative part of the velocity
+    cl_neg = NULL,
   )
 )

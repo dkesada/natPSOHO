@@ -1,34 +1,5 @@
 #include "include/velocity.h"
 
-//' Randomize a velocity with the given probabilities
-//' 
-//' @param vl a velocity list
-//' @param probs the probabilities of each value in the set {-1,0,1}
-//' @return a velocity list with randomized values
-// [[Rcpp::export]]
-Rcpp::List randomize_vl_cpp(Rcpp::List &vl, NumericVector &probs) {
-  Rcpp::List slice, velocity, directions, cu, pair;
-  unsigned int abs_op = 0, dir_tmp;
-  Rcpp::List res (2);
-  
-  // Initialization of the velocity
-  for(unsigned int i = 0; i < vl.size(); i++){
-    slice = vl[i];
-    for(unsigned int j = 0; j < slice.size(); j++){
-      pair = slice[j];
-      directions = random_directions(probs, slice.size());
-      pair[1] = directions[0];
-      dir_tmp = directions[1]; // Error on some systems with abs_op += directions[1];
-      abs_op += dir_tmp;
-    }
-  }
-  
-  res[0] = vl;
-  res[1] = abs_op;
-  
-  return res;
-}
-
 //' Substracts two Positions to obtain the Velocity that transforms one into the other
 //' 
 //' @param cl the first position's causal list

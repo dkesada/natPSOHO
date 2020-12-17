@@ -4,7 +4,7 @@
 #' in the pso part of the algorithm. They will not have the same structure
 #' as their binary counterparts, but their class skeleton will serve as a
 #' base.
-natCauslist <- R6::R6Class("Causlist",
+natCauslist <- R6::R6Class("natCauslist",
   public = list(
     #' @description 
     #' Constructor of the 'natCauslist' class
