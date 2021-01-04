@@ -75,11 +75,7 @@ natVelocity <- R6::R6Class("natVelocity",
     #' 
     #' @param vl a Velocity object
     add_velocity = function(vl){
-      
-      res <- vel_plus_vel_cpp(private$cl, vl$get_cl(), private$abs_op)
-      
-      private$cl <- res[[1]]
-      private$abs_op <- res[[2]]
+      nat_vel_plus_vel_cpp(private$cl, private$cl_neg, vl$get_cl(), vl$get_cl_neg(), private$abs_op, vl$get_abs_op())
     },
     
     #' @description 

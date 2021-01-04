@@ -12,6 +12,16 @@ int one_hot_cpp(int nat){
   return(1 << (nat - 1));
 }
 
+// Bitcount implementation from the book 'Hacker's Delight'
+int bitcount(unsigned x){
+  x = x - ((x >> 1) & 0x55555555);
+  x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+  x = (x + (x >> 4)) & 0x0F0F0F0F;
+  x = x + (x >> 8);
+  x = x + (x >> 16);
+  return x & 0x0000003F;
+}
+
 // Return the name of the node and its time slice
 // 
 // @param node a string with the name of the node

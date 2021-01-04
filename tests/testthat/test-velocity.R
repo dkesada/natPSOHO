@@ -26,20 +26,22 @@ test_that("random velocity generation works", {
   expect_equal(vl$get_abs_op(), res_n_ops)
 })
 
-# test_that("velocity addition works", { 
+#  TODO
+
+# test_that("velocity addition works", {
 #   ordering <- c("A_t_0", "B_t_0", "C_t_0")
 #   size <- 3
-#   
+# 
 #   vl1 <- Velocity$new(ordering, size)
 #   set.seed(42)
 #   vl1$randomize_velocity(c(15,60,25))
-#   
+# 
 #   set.seed(43)
 #   vl2 <- Velocity$new(ordering, size)
 #   vl2$randomize_velocity(c(15,60,25))
-#   
+# 
 #   vl1$add_velocity(vl2)
-#   
+# 
 #   res <- list(
 #     list(
 #       list(c("A_t_1", "B_t_1", "C_t_1"),
@@ -56,11 +58,11 @@ test_that("random velocity generation works", {
 #       list(c("A_t_2", "B_t_2", "C_t_2"),
 #            c(0,-1,0)))
 #   )
-#   
+# 
 #   expect_equal(vl1$get_cl(), res)
 #   expect_equal(vl1$get_abs_op(), 8)
 # })
-# 
+
 # test_that("cte times velocity works", { 
 #   ordering <- c("A_t_0", "B_t_0", "C_t_0")
 #   size <- 3

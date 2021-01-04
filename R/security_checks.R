@@ -34,6 +34,6 @@ numeric_prob_vector_check <- function(obj){
   if(!is.numeric(obj))
     stop(sprintf("%s has to be numeric.", deparse(substitute(obj))))
   if(length(obj) != 3)
-    stop(sprintf("%s has to of length 3.", deparse(substitute(obj))))
+    stop(sprintf("%s has to be of length 3.", deparse(substitute(obj))))
   # Not checking for positive numbers. Negative ones are also valid, although kind of useless.
 }

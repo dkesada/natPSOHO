@@ -46,33 +46,21 @@ Rcpp::List pos_minus_pos_cpp(Rcpp::List &cl, Rcpp::List &ps, Rcpp::List &vl){
 //' @param abs_op the final number of {1,-1} operations
 //' @return a list with the Velocity's causal list and the number of operations
 // [[Rcpp::export]]
-Rcpp::List vel_plus_vel_cpp(Rcpp::List &vl1, Rcpp::List &vl2, int abs_op){
-  Rcpp::List slice_vl1, slice_vl2, cu_vl1, cu_vl2, pair_vl1, pair_vl2;
-  Rcpp::NumericVector dirs_vl1, dirs_vl2;
-  Rcpp::List res (2);
+void nat_vel_plus_vel_cpp(Rcpp::NumericVector &vl1, Rcpp::NumericVector &vl1_neg,
+                          Rcpp::NumericVector &vl2, Rcpp::NumericVector &vl2_neg, 
+                          int &abs_op1, int abs_op2){
+  int pos1, pos2, neg1, neg2, res1, res2, mask, res_abs_op;
   
+  res_abs_op = abs_op1 + abs_op2;
   for(unsigned int i = 0; i < vl1.size(); i++){
-    slice_vl1 = vl1[i];
-    slice_vl2 = vl2[i];
+    pos1 = vl1[i];
+    pos2 = vl2[i];
+    neg1 = vl1_neg[i];
+    neg2 = vl2_neg[i];
     
-    for(unsigned int j = 0; j < slice_vl1.size(); j++){
-      pair_vl1 = slice_vl1[j];
-      pair_vl2 = slice_vl2[j];
-      dirs_vl1 = pair_vl1[1];
-      dirs_vl2 = pair_vl2[1];
-      dirs_vl1 = add_vel_dirs_vec(dirs_vl1, dirs_vl2, abs_op);
-      
-      pair_vl1[1] = dirs_vl1;
-      slice_vl1[j] = pair_vl1;
-    }
-    
-    vl1[i] = slice_vl1;
+    //TODO
   }
   
-  res[0] = vl1;
-  res[1] = abs_op;
-  
-  return res;
 }
 
 //' Multiply a Velocity by a constant real number

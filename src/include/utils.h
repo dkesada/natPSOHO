@@ -11,6 +11,7 @@ using namespace Rcpp;
 #include <random>
 
 int one_hot_cpp(int nat);
+int bitcount(unsigned x);
 Rcpp::StringVector find_name_and_index(std::string node);
 void include_arc(Rcpp::StringMatrix &res, const Rcpp::StringVector &ordering, int i, int j, int &k);
 int find_index(const Rcpp::StringVector &ordering, std::string node);
