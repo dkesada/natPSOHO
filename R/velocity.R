@@ -14,9 +14,12 @@ natVelocity <- R6::R6Class("natVelocity",
     #' @return A new 'natVelocity' object
     initialize = function(ordering, max_size){
       super$initialize(ordering)
-      private$cl_neg <- private$cl
+      private$abs_op <- 0
       private$max_size <- max_size
+      private$cl_neg <- private$cl
     },
+    
+    get_cl_neg = function(){return(private$cl_neg)},
     
     #' @description 
     #' Getter of the abs_op attribute.
@@ -34,29 +37,24 @@ natVelocity <- R6::R6Class("natVelocity",
     set_abs_op = function(n){private$abs_op = n},
     
     #' @description 
-    #' Randomizes the Velocity's directions. If the seed provided is NULL, no
-    #' seed will be used.
+    #' Randomizes the Velocity's directions.
     #' 
     #' @param probs the weight of each value {-1,0,1}. They define the probability that each of them will be picked 
-    #' @param seed the seed provided to the random number generation
+    #' @param p the parameter of the geometric distribution
     randomize_velocity = function(probs = c(10, 65, 25), p = 0.06){
       numeric_prob_vector_check(probs)
       
       for(i in 1:length(private$cl)){
         op <- rmultinom(n = 1, size = 1, prob = probs)
         if(op[3] == 1){
-          private$cl[i] <- trunc_geom(p, private$max_size)
+          private$cl[i] <- trunc_geom(p, 2^(private$max_size - 1))
           private$abs_op <- private$abs_op + count_bits(private$cl[i])
         }
         else if (op[1] == 1){
-          private$cl_neg[i] <- trunc_geom(p, private$max_size)
+          private$cl_neg[i] <- trunc_geom(p, 2^(private$max_size - 1))
           private$abs_op <- private$abs_op + count_bits(private$cl_neg[i])
         }
       }
-      
-      private$cl <- directions[[1]]
-      private$cl_neg <- directions[[2]]
-      private$abs_op <- directions[[3]]
     },
     
     #' @description 
@@ -66,8 +64,6 @@ natVelocity <- R6::R6Class("natVelocity",
     #' @param ps a Position object
     #' return the Velocity that gets this position to the new one
     subtract_positions = function(ps1, ps2){
-      initial_pos_2_pos_check(ps1, ps2$get_size(), ps2$get_ordering())
-      
       res <- pos_minus_pos_cpp(ps1$get_cl(), ps2$get_cl(), private$cl)
       
       private$cl <- res[[1]]
@@ -79,7 +75,6 @@ natVelocity <- R6::R6Class("natVelocity",
     #' 
     #' @param vl a Velocity object
     add_velocity = function(vl){
-      initial_vel_2_vel_check(vl, private$size, private$ordering)
       
       res <- vel_plus_vel_cpp(private$cl, vl$get_cl(), private$abs_op)
       
@@ -116,7 +111,9 @@ natVelocity <- R6::R6Class("natVelocity",
   private = list(
     #' @field abs_op Total number of operations 1 or -1 in the velocity
     abs_op = NULL,
+    #' @field max_size Maximum number of timeslices of the DBN
+    max_size = NULL,
     #' @field cl_neg Negative part of the velocity
-    cl_neg = NULL,
+    cl_neg = NULL
   )
 )

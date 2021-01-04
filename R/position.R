@@ -62,8 +62,6 @@ natPosition <- R6::R6Class("natPosition",
     #' Given a Velocity object, add it to the current position.
     #' @param vl a Velocity object
     add_velocity = function(vl){
-      initial_vel_2_pos_check(vl, private$size, private$ordering)
-      
       res = pos_plus_vel_cpp(private$cl, vl$get_cl(), private$n_arcs)
       private$cl = res[[1]]
       private$n_arcs = res[[2]]
@@ -76,8 +74,6 @@ natPosition <- R6::R6Class("natPosition",
     #' @param ps a Position object
     #' return the Velocity that gets this position to the new one
     subtract_position = function(ps){
-      initial_pos_2_pos_check(ps, private$size, private$ordering)
-      
       res <- Velocity$new(private$ordering, private$size)
       res$subtract_positions(self, ps)
       

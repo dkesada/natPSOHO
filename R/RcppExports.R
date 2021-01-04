@@ -52,25 +52,6 @@ one_hot_cpp <- function(nat) {
     .Call('_natPsoho_one_hot_cpp', PACKAGE = 'natPsoho', nat)
 }
 
-#' Return a list of nodes with the time slice appended up to the desired size
-#' of the network
-#' 
-#' @param nodes a list with the names of the nodes in the network
-#' @param size the size of the DBN
-#' @return a list with the renamed nodes in each timeslice
-rename_nodes_cpp <- function(nodes, size) {
-    .Call('_natPsoho_rename_nodes_cpp', PACKAGE = 'natPsoho', nodes, size)
-}
-
-#' Randomize a velocity with the given probabilities
-#' 
-#' @param vl a velocity list
-#' @param probs the probabilities of each value in the set {-1,0,1}
-#' @return a velocity list with randomized values
-randomize_vl_cpp <- function(vl, probs) {
-    .Call('_natPsoho_randomize_vl_cpp', PACKAGE = 'natPsoho', vl, probs)
-}
-
 #' Substracts two Positions to obtain the Velocity that transforms one into the other
 #' 
 #' @param cl the first position's causal list

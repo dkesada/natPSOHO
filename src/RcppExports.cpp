@@ -68,30 +68,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rename_nodes_cpp
-Rcpp::StringVector rename_nodes_cpp(const Rcpp::StringVector& nodes, unsigned int size);
-RcppExport SEXP _natPsoho_rename_nodes_cpp(SEXP nodesSEXP, SEXP sizeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type nodes(nodesSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type size(sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(rename_nodes_cpp(nodes, size));
-    return rcpp_result_gen;
-END_RCPP
-}
-// randomize_vl_cpp
-Rcpp::List randomize_vl_cpp(Rcpp::List& vl, NumericVector& probs);
-RcppExport SEXP _natPsoho_randomize_vl_cpp(SEXP vlSEXP, SEXP probsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl(vlSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type probs(probsSEXP);
-    rcpp_result_gen = Rcpp::wrap(randomize_vl_cpp(vl, probs));
-    return rcpp_result_gen;
-END_RCPP
-}
 // pos_minus_pos_cpp
 Rcpp::List pos_minus_pos_cpp(Rcpp::List& cl, Rcpp::List& ps, Rcpp::List& vl);
 RcppExport SEXP _natPsoho_pos_minus_pos_cpp(SEXP clSEXP, SEXP psSEXP, SEXP vlSEXP) {
@@ -139,8 +115,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_pos_plus_vel_cpp, 3},
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
-    {"_natPsoho_rename_nodes_cpp", (DL_FUNC) &_natPsoho_rename_nodes_cpp, 2},
-    {"_natPsoho_randomize_vl_cpp", (DL_FUNC) &_natPsoho_randomize_vl_cpp, 2},
     {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
     {"_natPsoho_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_vel_plus_vel_cpp, 3},
     {"_natPsoho_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_cte_times_vel_cpp, 4},
