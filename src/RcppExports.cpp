@@ -81,16 +81,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// vel_plus_vel_cpp
-Rcpp::List vel_plus_vel_cpp(Rcpp::List& vl1, Rcpp::List& vl2, int abs_op);
-RcppExport SEXP _natPsoho_vel_plus_vel_cpp(SEXP vl1SEXP, SEXP vl2SEXP, SEXP abs_opSEXP) {
+// nat_vel_plus_vel_cpp
+int nat_vel_plus_vel_cpp(Rcpp::NumericVector& vl1, Rcpp::NumericVector& vl1_neg, Rcpp::NumericVector& vl2, Rcpp::NumericVector& vl2_neg, int abs_op1, int abs_op2);
+RcppExport SEXP _natPsoho_nat_vel_plus_vel_cpp(SEXP vl1SEXP, SEXP vl1_negSEXP, SEXP vl2SEXP, SEXP vl2_negSEXP, SEXP abs_op1SEXP, SEXP abs_op2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl1(vl1SEXP);
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl2(vl2SEXP);
-    Rcpp::traits::input_parameter< int >::type abs_op(abs_opSEXP);
-    rcpp_result_gen = Rcpp::wrap(vel_plus_vel_cpp(vl1, vl2, abs_op));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl1(vl1SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl1_neg(vl1_negSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl2(vl2SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl2_neg(vl2_negSEXP);
+    Rcpp::traits::input_parameter< int >::type abs_op1(abs_op1SEXP);
+    Rcpp::traits::input_parameter< int >::type abs_op2(abs_op2SEXP);
+    rcpp_result_gen = Rcpp::wrap(nat_vel_plus_vel_cpp(vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -116,7 +119,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
-    {"_natPsoho_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_vel_plus_vel_cpp, 3},
+    {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},
     {"_natPsoho_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_cte_times_vel_cpp, 4},
     {NULL, NULL, 0}
 };

@@ -62,14 +62,27 @@ pos_minus_pos_cpp <- function(cl, ps, vl) {
     .Call('_natPsoho_pos_minus_pos_cpp', PACKAGE = 'natPsoho', cl, ps, vl)
 }
 
-#' Add two Velocities 
+#' Adds two natVelocities 
 #' 
-#' @param vl1 the first Velocity's causal list
-#' @param vl2 the second Velocity's causal list
-#' @param abs_op the final number of {1,-1} operations
-#' @return a list with the Velocity's causal list and the number of operations
-vel_plus_vel_cpp <- function(vl1, vl2, abs_op) {
-    .Call('_natPsoho_vel_plus_vel_cpp', PACKAGE = 'natPsoho', vl1, vl2, abs_op)
+#' Adds two natVelocities represented as two numeric vectors: one with the
+#' positive part and one with the negative part. Adding them is a process that
+#' does a bitwise 'or' with both the positive and negative parts of the two
+#' velocities, adjusts the new abs_op, removes duplicated arcs in the final
+#' velocity by using a bitwise 'xor' with both parts and adjusts the final abs_op.
+#' The results are returned via modifying the original vl1 and vl1_neg by
+#' reference and returning the final abs_op normally. I can't have an integer
+#' edited by reference because it automatically gets casted and cannot be used
+#' to return values. 
+#' 
+#' @param vl1 the first Velocity's positive part 
+#' @param vl1_neg the first Velocity's negative part 
+#' @param vl2 the second Velocity's positive part
+#' @param vl2_neg the first Velocity's negative part 
+#' @param abs_op1 the number of {1,-1} operations in the first velocity
+#' @param abs_op2 the number of {1,-1} operations in the second velocity
+#' @return the total number of resulting operations
+nat_vel_plus_vel_cpp <- function(vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2) {
+    .Call('_natPsoho_nat_vel_plus_vel_cpp', PACKAGE = 'natPsoho', vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2)
 }
 
 #' Multiply a Velocity by a constant real number

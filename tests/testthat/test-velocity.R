@@ -26,42 +26,27 @@ test_that("random velocity generation works", {
   expect_equal(vl$get_abs_op(), res_n_ops)
 })
 
-#  TODO
+test_that("velocity addition works", {
+  ordering <- c("A_t_0", "B_t_0", "C_t_0")
+  size <- 3
 
-# test_that("velocity addition works", {
-#   ordering <- c("A_t_0", "B_t_0", "C_t_0")
-#   size <- 3
-# 
-#   vl1 <- Velocity$new(ordering, size)
-#   set.seed(42)
-#   vl1$randomize_velocity(c(15,60,25))
-# 
-#   set.seed(43)
-#   vl2 <- Velocity$new(ordering, size)
-#   vl2$randomize_velocity(c(15,60,25))
-# 
-#   vl1$add_velocity(vl2)
-# 
-#   res <- list(
-#     list(
-#       list(c("A_t_1", "B_t_1", "C_t_1"),
-#            c(-1,-1,0)),
-#       list(c("A_t_1", "B_t_1", "C_t_1"),
-#            c(1,1,0)),
-#       list(c("A_t_1", "B_t_1", "C_t_1"),
-#            c(1,0,1))),
-#     list(
-#       list(c("A_t_2", "B_t_2", "C_t_2"),
-#            c(0,0,1)),
-#       list(c("A_t_2", "B_t_2", "C_t_2"),
-#            c(0,0,0)),
-#       list(c("A_t_2", "B_t_2", "C_t_2"),
-#            c(0,-1,0)))
-#   )
-# 
-#   expect_equal(vl1$get_cl(), res)
-#   expect_equal(vl1$get_abs_op(), 8)
-# })
+  vl1 <- natVelocity$new(ordering, size)
+  set.seed(42)
+  vl1$randomize_velocity(c(15,60,25))
+
+  vl2 <- natVelocity$new(ordering, size)
+  set.seed(43)
+  vl2$randomize_velocity(c(15,60,25))
+
+  vl1$add_velocity(vl2)
+
+  res_cl <- c(0,2,0,0,2,0,0,0,0)
+  res_cl_neg <- c(3,0,0,0,0,0,3,0,0)
+
+  expect_equal(vl1$get_cl(), res_cl)
+  expect_equal(vl1$get_cl_neg(), res_cl_neg)
+  expect_equal(vl1$get_abs_op(), 6)
+})
 
 # test_that("cte times velocity works", { 
 #   ordering <- c("A_t_0", "B_t_0", "C_t_0")

@@ -39,28 +39,63 @@ Rcpp::List pos_minus_pos_cpp(Rcpp::List &cl, Rcpp::List &ps, Rcpp::List &vl){
   return res;
 }
 
-//' Add two Velocities 
+//' Adds two natVelocities 
 //' 
-//' @param vl1 the first Velocity's causal list
-//' @param vl2 the second Velocity's causal list
-//' @param abs_op the final number of {1,-1} operations
-//' @return a list with the Velocity's causal list and the number of operations
+//' Adds two natVelocities represented as two numeric vectors: one with the
+//' positive part and one with the negative part. Adding them is a process that
+//' does a bitwise 'or' with both the positive and negative parts of the two
+//' velocities, adjusts the new abs_op, removes duplicated arcs in the final
+//' velocity by using a bitwise 'xor' with both parts and adjusts the final abs_op.
+//' The results are returned via modifying the original vl1 and vl1_neg by
+//' reference and returning the final abs_op normally. I can't have an integer
+//' edited by reference because it automatically gets casted and cannot be used
+//' to return values. 
+//' 
+//' @param vl1 the first Velocity's positive part 
+//' @param vl1_neg the first Velocity's negative part 
+//' @param vl2 the second Velocity's positive part
+//' @param vl2_neg the first Velocity's negative part 
+//' @param abs_op1 the number of {1,-1} operations in the first velocity
+//' @param abs_op2 the number of {1,-1} operations in the second velocity
+//' @return the total number of resulting operations
 // [[Rcpp::export]]
-void nat_vel_plus_vel_cpp(Rcpp::NumericVector &vl1, Rcpp::NumericVector &vl1_neg,
+int nat_vel_plus_vel_cpp(Rcpp::NumericVector &vl1, Rcpp::NumericVector &vl1_neg,
                           Rcpp::NumericVector &vl2, Rcpp::NumericVector &vl2_neg, 
-                          int &abs_op1, int abs_op2){
-  int pos1, pos2, neg1, neg2, res1, res2, mask, res_abs_op;
+                          int abs_op1, int abs_op2){
+  int pos1, pos2, neg1, neg2, mask, res;
   
-  res_abs_op = abs_op1 + abs_op2;
+  res = abs_op1 + abs_op2;
   for(unsigned int i = 0; i < vl1.size(); i++){
     pos1 = vl1[i];
     pos2 = vl2[i];
     neg1 = vl1_neg[i];
     neg2 = vl2_neg[i];
     
-    //TODO
+    add_nat_vel(pos1, pos2, res);
+    add_nat_vel(neg1, neg2, res);
+    mask = pos1 & neg1;
+    
+    if(mask){
+      pos1 ^= mask;
+      neg1 ^= mask;
+      res -= 2 * bitcount(mask);
+    }
+    
+    vl1[i] = pos1;
+    vl1_neg[i] = neg1;
   }
   
+  return res;
+}
+
+// Auxiliary function to make the main 'for' less verbose. It adds a natural
+// number in two velocities by using an 'or' and removes duplicated operations 
+// from abs_op.
+void add_nat_vel(int &num1, int num2, int &abs_op){
+  int mask = num1 & num2;
+  if(mask)
+    abs_op -= bitcount(mask);
+  num1 |= num2;
 }
 
 //' Multiply a Velocity by a constant real number

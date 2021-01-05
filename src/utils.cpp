@@ -13,6 +13,20 @@ int one_hot_cpp(int nat){
 }
 
 // Bitcount implementation from the book 'Hacker's Delight'
+// Basically, a divide and conquer algorithm that sums the number of bits
+// in two halfs. It is not done recursively because the size of integers is
+// fixed to 2^5, and so only 5 "mask and add" steps are needed.
+// A less efficient but more readable version would be:
+//
+// int bitcount(unsigned int x)
+// {
+//   x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
+//   x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+//   x = (x & 0x0F0F0F0F) + ((x >> 4) & 0x0F0F0F0F);
+//   x = (x & 0x00FF00FF) + ((x >> 8) & 0x00FF00FF);
+//   x = (x & 0x0000FFFF) + ((x >> 16)& 0x0000FFFF);
+//   return x;
+// }
 int bitcount(unsigned x){
   x = x - ((x >> 1) & 0x55555555);
   x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
