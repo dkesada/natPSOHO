@@ -104,14 +104,11 @@ void add_nat_vel(int &num1, int num2, int &abs_op){
 //' @param vl the Velocity's causal list
 //' @param abs_op the final number of {1,-1} operations
 //' @param max_op the maximum number of directions in the causal list
-//' @return a list with the Velocity's new causal list and number of operations
+//' @return the new total number of operations 
 // [[Rcpp::export]]
-Rcpp::List cte_times_vel_cpp(float k, Rcpp::List &vl, unsigned int abs_op, int max_op){
-  Rcpp::List res (2);
-  int n_op, idx, cmp;
-  Rcpp::List pool, n_pool;
+int cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, int abs_op, int max_op){
+  int res, n_op, idx, cmp;
   int l_pool = abs_op;
-  Rcpp::NumericVector pos;
   bool invert = false;
   NumericVector tmp;
   
@@ -123,14 +120,10 @@ Rcpp::List cte_times_vel_cpp(float k, Rcpp::List &vl, unsigned int abs_op, int m
   
   n_op = floor(k * abs_op);
   res[1] = n_op;
-  if(n_op < -max_op){
-    n_op = -max_op;
-    res[1] = max_op;
-  }
     
-  else if(n_op > max_op){
+  if(n_op > max_op){
     n_op = max_op;
-    res[1] = max_op;
+    res = max_op;
   }
   
   n_op = abs_op - n_op;
@@ -150,7 +143,7 @@ Rcpp::List cte_times_vel_cpp(float k, Rcpp::List &vl, unsigned int abs_op, int m
   
   if(n_op > 0){
     // Loop through the cl to store the position and sign invert the 0's or the 1's depending on k greater or lesser than 0
-    locate_directions(vl, pool, cmp, invert);
+    
     
     // Sample the position vector to position 0's or 1's in some or all of those positions
     pos = seq(0, (pool.size() - 1));
@@ -163,7 +156,6 @@ Rcpp::List cte_times_vel_cpp(float k, Rcpp::List &vl, unsigned int abs_op, int m
     }
     
     // Operate the selected directions
-    modify_directions(vl, n_pool, cmp);
   }
   
   res[0] = vl;

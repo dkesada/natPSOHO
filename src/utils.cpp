@@ -14,7 +14,7 @@ int one_hot_cpp(int nat){
 
 // Bitcount implementation from the book 'Hacker's Delight'
 // Basically, a divide and conquer algorithm that sums the number of bits
-// in two halfs. It is not done recursively because the size of integers is
+// in two halves. It is not done recursively because the size of integers is
 // fixed to 2^5, and so only 5 "mask and add" steps are needed.
 // A less efficient but more readable version would be:
 //
@@ -201,67 +201,46 @@ Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVecto
   return res;
 }
 
-// Find the position of 0's or 1's in a Velocity's causality list
-// 
-// @param vl the Velocity's causality list
-// @param pool the list with the positions
-// @param cmp the direction to be searched, either 0 or 1 
-// @return a list with the Velocity's new causal list and number of operations
-void locate_directions(Rcpp::List &vl, Rcpp::List &pool, int cmp, bool invert){
-  Rcpp::List slice, cu, pair;
-  Rcpp::NumericVector dirs;
-  unsigned int pool_i = 0;
+// Add a number of operations in the open bits of an integer
+//
+// @param x the integer to process
+// @param n_ops number of operations to add
+// @param max_arcs the maximum size of the network
+// @return an array with the open bit positions
+int add_ops(int x, int n_ops, int max_arcs){
+  int available = x ^ (one_hot_cpp(max_arcs+1) - 1);
+  Rcpp::NumericVector pos = find_open_bits(available);
+  Rcpp::NumericVector samp = sample(pos, n_ops, false);
   
-  for(unsigned int i = 0; i < vl.size(); i++){
-    slice = vl[i];
-    
-    for(unsigned int j = 0; j < slice.size(); j++){
-      pair = slice[j];
-      dirs = pair[1];
-      
-      for(unsigned int k = 0; k < dirs.size(); k++){
-        if(invert)
-          dirs[k] = -dirs[k];
-        if(std::abs(dirs[k]) == cmp){
-          Rcpp::NumericVector pool_res (3);
-          pool_res[0] = i;
-          pool_res[1] = j;
-          pool_res[2] = k;
-          pool[pool_i++] = pool_res;
-        }
-      }
-    }
-  }
+  for(int i = 0; i < samp.size; i++){
+    int arc = one_hot_cpp(samp[i]);
+    x |= arc;
+  } 
+  
+  return x;
 }
 
-// Modify the 0's or 1's in the given positons of a Velocity's causality list
+// Find the bits that are set to 0 in an integer
 // 
-// @param vl the Velocity's causality list
-// @param n_pool the list with the positions
-// @param cmp the direction to be searched, either 0 or 1 
-// @return a list with the Velocity's new causal list and number of operations
-void modify_directions(Rcpp::List &vl, Rcpp::List &n_pool, int cmp){
-  Rcpp::List slice, pair;
-  Rcpp::NumericVector tuple, dirs;
-  unsigned int idx;
-  NumericVector base = {-1,1};
-  NumericVector rand (1);
+// This can also be done recursively by masking, but in most cases the size
+// of the network shouldn't exceed size 8 or so, which means only 8 iterations
+// at worst. By using divide and conquer, I could get there in O(log(n)), but
+// it would be more of a hassle than an improvement on the average case.
+//
+// @param x the integer to process
+// @return an array with the open bit positions
+Rcpp::NumericVector find_open_bits(int x){
+  Rcpp::NumericVector res(bitcount(x));
+  int i = 0, pos = 0;
   
-  for(unsigned int i = 0; i < n_pool.size(); i++){
-    tuple = n_pool[i];
-    idx = tuple[0];
-    slice = vl[idx];
-    idx = tuple[1];
-    pair = slice[idx];
-    dirs = pair[1];
-    idx = tuple[2];
-
-    if(cmp == 0){
-      rand = sample(base, 1, false);
-      dirs(idx) = rand[0];
+  while(x != 0){
+    if(x % 2){
+      res[i] = pos;
+      i++;
     }
-
-    else
-      dirs(idx) = 0.0;
+    x >>= 1;
+    pos++;
   }
+  
+  return res;
 }

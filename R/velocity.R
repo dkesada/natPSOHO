@@ -91,12 +91,13 @@ natVelocity <- R6::R6Class("natVelocity",
       # initial_numeric_check(k) --ICO-Merge
       
       if(k == 0){
-        private$cl <- initialize_cl_cpp(private$ordering, private$size)
+        private$cl <- rep(0, length(private$cl))
+        private$cl_neg <- private$cl
         private$abs_op <- 0
       }
       
       else{
-        max_op <- (private$size - 1) * length(private$ordering) * length(private$ordering)
+        max_op <- private$max_size * length(private$cl)
         res = cte_times_vel_cpp(k, private$cl, private$abs_op, max_op)
         
         private$cl = res[[1]]
