@@ -96,13 +96,8 @@ natVelocity <- R6::R6Class("natVelocity",
         private$abs_op <- 0
       }
       
-      else{
-        max_op <- private$max_size * length(private$cl)
-        res = cte_times_vel_cpp(k, private$cl, private$abs_op, max_op)
-        
-        private$cl = res[[1]]
-        private$abs_op = res[[2]]
-      }
+      else
+        private$abs_op = nat_cte_times_vel_cpp(k, private$cl, private$cl_neg, private$abs_op, private$max_size)
     }
   ),
   private = list(

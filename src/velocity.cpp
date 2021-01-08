@@ -101,48 +101,43 @@ void add_nat_vel(int &num1, int num2, int &abs_op){
 //' Multiply a Velocity by a constant real number
 //' 
 //' @param k the constant real number
-//' @param vl the Velocity's causal list
+//' @param vl the Velocity's positive causal list
+//' @param vl_neg the Velocity's negative causal list
 //' @param abs_op the final number of {1,-1} operations
 //' @param max_op the maximum number of directions in the causal list
 //' @return the new total number of operations 
 // [[Rcpp::export]]
-int cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, int abs_op, int max_op){
-  int res, n_op, idx, cmp;
-  int l_pool = abs_op;
-  bool invert = false;
-  NumericVector tmp;
+int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector &vl_neg, int abs_op, int max_size){
+  int res, max_op, n_op;
+  bool remove;
+  Rcpp::NumericVector open;
   
-  // Process the k and max_op
+  max_op <- (max_size - 1) * vl.size())
+  
+  // Invert the bits if k < 0
   if(k < 0){
     k = fabs(k);
-    invert = true;
+    
+    // Forget about switching the bits; just switch the positive and negative vector references
+    // for(int i = 0; i < vl.size(); i++){
+    //   tmp = vl[i];
+    //   n_op = bitcount(tmp);
+    //   tmp ^= (one_hot_cpp(max_size + 1) - 1);
+    //   abs_op = abs_op - (n_op - bitcount(tmp))
+    //   vl[i] = tmp;
+    // }
   }
   
   n_op = floor(k * abs_op);
-  res[1] = n_op;
-    
-  if(n_op > max_op){
+  if(n_op > max_op)
     n_op = max_op;
-    res = max_op;
-  }
+  res = n_op;
   
   n_op = abs_op - n_op;
-  
-  if(n_op < 0){ // Convert {0} into {1,-1}
-    l_pool = max_op - abs_op; // Number of 0's remaining
-    n_op = std::abs(n_op);
-    pool = Rcpp::List(l_pool);
-    cmp = 0;
-  } 
-  
-  else{ // Convert {1,-1} into {0}
-    n_op = std::abs(n_op);
-    pool = Rcpp::List(l_pool);
-    cmp = 1;
-  }
+  remove = n_op < 0; // Whether to add or remove arcs
+  n_op = std::abs(n_op);
   
   if(n_op > 0){
-    // Loop through the cl to store the position and sign invert the 0's or the 1's depending on k greater or lesser than 0
     
     
     // Sample the position vector to position 0's or 1's in some or all of those positions
