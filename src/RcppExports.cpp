@@ -68,6 +68,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// debug_cpp
+int debug_cpp();
+RcppExport SEXP _natPsoho_debug_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(debug_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // pos_minus_pos_cpp
 Rcpp::List pos_minus_pos_cpp(Rcpp::List& cl, Rcpp::List& ps, Rcpp::List& vl);
 RcppExport SEXP _natPsoho_pos_minus_pos_cpp(SEXP clSEXP, SEXP psSEXP, SEXP vlSEXP) {
@@ -97,17 +107,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cte_times_vel_cpp
-Rcpp::List cte_times_vel_cpp(float k, Rcpp::List& vl, unsigned int abs_op, int max_op);
-RcppExport SEXP _natPsoho_cte_times_vel_cpp(SEXP kSEXP, SEXP vlSEXP, SEXP abs_opSEXP, SEXP max_opSEXP) {
+// nat_cte_times_vel_cpp
+int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector& vl, Rcpp::NumericVector& vl_neg, int abs_op, int max_size);
+RcppExport SEXP _natPsoho_nat_cte_times_vel_cpp(SEXP kSEXP, SEXP vlSEXP, SEXP vl_negSEXP, SEXP abs_opSEXP, SEXP max_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< float >::type k(kSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl(vlSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type abs_op(abs_opSEXP);
-    Rcpp::traits::input_parameter< int >::type max_op(max_opSEXP);
-    rcpp_result_gen = Rcpp::wrap(cte_times_vel_cpp(k, vl, abs_op, max_op));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl(vlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl_neg(vl_negSEXP);
+    Rcpp::traits::input_parameter< int >::type abs_op(abs_opSEXP);
+    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(nat_cte_times_vel_cpp(k, vl, vl_neg, abs_op, max_size));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -118,9 +129,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_pos_plus_vel_cpp, 3},
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
+    {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 0},
     {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},
-    {"_natPsoho_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_cte_times_vel_cpp, 4},
+    {"_natPsoho_nat_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_nat_cte_times_vel_cpp, 5},
     {NULL, NULL, 0}
 };
 

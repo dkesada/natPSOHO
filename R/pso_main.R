@@ -31,3 +31,11 @@ learn_dbn_structure_pso <- function(dt, size, n_inds = 50, n_it = 50,
   
   return(ctrl$get_best_network())
 }
+
+# Just a debug function to try out stuff
+#' @export
+debug_foo <- function(){
+  res <- debug_cpp()
+  
+  return(res)
+}

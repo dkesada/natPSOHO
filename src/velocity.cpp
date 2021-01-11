@@ -108,25 +108,13 @@ void add_nat_vel(int &num1, int num2, int &abs_op){
 //' @return the new total number of operations 
 // [[Rcpp::export]]
 int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector &vl_neg, int abs_op, int max_size){
-  int res, max_op, n_op;
+  int res, max_op, n_op, pos, item_idx, pos_idx, bit_idx, origin, max_int;
   bool remove;
-  Rcpp::NumericVector open;
+  std::vector<Rcpp::NumericVector> pool, pool_item;
+  Rcpp::NumericVector item_samp, bit_pool, bit_samp;
   
-  max_op <- (max_size - 1) * vl.size())
-  
-  // Invert the bits if k < 0
-  if(k < 0){
-    k = fabs(k);
-    
-    // Forget about switching the bits; just switch the positive and negative vector references
-    // for(int i = 0; i < vl.size(); i++){
-    //   tmp = vl[i];
-    //   n_op = bitcount(tmp);
-    //   tmp ^= (one_hot_cpp(max_size + 1) - 1);
-    //   abs_op = abs_op - (n_op - bitcount(tmp))
-    //   vl[i] = tmp;
-    // }
-  }
+  max_op = (max_size - 1) * vl.size();
+  max_int = one_hot_cpp(max_size + 1) - 1;
   
   n_op = floor(k * abs_op);
   if(n_op > max_op)
@@ -137,23 +125,54 @@ int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector 
   remove = n_op < 0; // Whether to add or remove arcs
   n_op = std::abs(n_op);
   
-  if(n_op > 0){
+  // Find a pool of possible integers in the cl and cl_neg to operate
+  if(remove)
+    pool = find_open_positions(vl, vl_neg, 0);
+  else
+    pool = find_open_positions(vl, vl_neg, one_hot_cpp(max_size + 1) - 1);
+  
+  for(int i = 0; i < n_op; i++){
+    // Sample a position from the pool
+    item_samp = seq(0, pool.size() - 1);
+    item_samp = sample(item_samp, 1, false);
+    item_idx = item_samp[0];
+    item_samp = pool[item_idx];
     
+    // Find the pool of bits in that position
+    pos_idx = item_samp[0];
+    origin = item_samp[1];
+    if(origin)
+      pos = vl_neg[pos_idx];
+    else
+      pos = vl[pos_idx];
+    bit_pool = find_open_bits(pos, remove, max_size);
+    Rcpp::Rcout << "\n Pool equals: " << pool.size() << "\n";
+    // Sample a bit and add it or remove it
+    Rcpp::Rcout << bit_pool.size();
+    bit_samp = seq(0, bit_pool.size() - 1);
+    Rcpp::Rcout << "---------------------ok---------------------";
+    bit_samp = sample(bit_samp, 1, false);
+    bit_idx = bit_samp[0];
+    bit_idx = bit_pool[bit_idx];
     
-    // Sample the position vector to position 0's or 1's in some or all of those positions
-    pos = seq(0, (pool.size() - 1));
-    pos = sample(pos, n_op, false);
-    n_pool = Rcpp::List(n_op);
-    for(unsigned int i = 0; i < pos.size(); i++){
-      idx = pos[i];
-      tmp = pool[idx];
-      n_pool[i] = tmp;
+    if(remove){
+      pos ^= one_hot_cpp(bit_idx);
+      if(pos == 0)
+        pool.erase(pool.begin() + item_idx);
     }
     
-    // Operate the selected directions
+    else{
+      pos |= one_hot_cpp(bit_idx);
+      if(pos == max_int)
+        pool.erase(pool.begin() + item_idx);
+    }
+    
+    // Save the modification of the velocity
+    if(origin)
+      vl_neg[pos_idx] = pos;
+    else
+      vl[pos_idx] = pos;
   }
-  
-  res[0] = vl;
   
   return res;
 }

@@ -201,26 +201,47 @@ Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVecto
   return res;
 }
 
-// Add a number of operations in the open bits of an integer
+// Find the positions that are available to operate in a velocity
+// 
+// When adding or removing arcs via cte * vel, this finds positions where
+// bits can be added or removed
 //
-// @param x the integer to process
-// @param n_ops number of operations to add
-// @param max_arcs the maximum size of the network
-// @return an array with the open bit positions
-int add_ops(int x, int n_ops, int max_arcs){
-  int available = x ^ (one_hot_cpp(max_arcs+1) - 1);
-  Rcpp::NumericVector pos = find_open_bits(available);
-  Rcpp::NumericVector samp = sample(pos, n_ops, false);
+// @param cl the positive causal list
+// @param cl_neg the negative causal list
+// @param max_size if 0 will search for integers greater than 0. Will search for < max_size otherwise.
+// @return a NumericVector with the open positions
+std::vector<Rcpp::NumericVector> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::NumericVector &cl_neg, int max_size){
+  std::vector<Rcpp::NumericVector> res(cl.size()*2);
+  bool add = max_size;
+  int pos, pos_neg, j = 0;
   
-  for(int i = 0; i < samp.size; i++){
-    int arc = one_hot_cpp(samp[i]);
-    x |= arc;
-  } 
+  for(int i = 0; i < cl.size(); i++){
+    Rcpp::NumericVector element(2);
+    Rcpp::NumericVector element_neg(2);
+    pos = cl[i];
+    pos_neg = cl_neg[i];
+    
+    if((add && pos < max_size) || (!add && pos > 0)){
+      element[0] = pos;
+      element[1] = 0;
+      res[j] = element;
+      j++;
+    }
+    
+    if((add && pos_neg < max_size) || (!add && pos_neg > 0)){
+      element_neg[0] = pos_neg;
+      element_neg[1] = 1;
+      res[j] = element_neg;
+      j++;
+    }
+  }
   
-  return x;
+  res.resize(j);
+  
+  return res;
 }
 
-// Find the bits that are set to 0 in an integer
+// Find the bits that are set to 0 or 1 in an integer
 // 
 // This can also be done recursively by masking, but in most cases the size
 // of the network shouldn't exceed size 8 or so, which means only 8 iterations
@@ -228,8 +249,11 @@ int add_ops(int x, int n_ops, int max_arcs){
 // it would be more of a hassle than an improvement on the average case.
 //
 // @param x the integer to process
-// @return an array with the open bit positions
-Rcpp::NumericVector find_open_bits(int x){
+// @param remove if true, will search for bits set to 1. Will search for 0s otherwise.
+// @return a NumericVector with the open bits
+Rcpp::NumericVector find_open_bits(int x, bool remove, int max_size){
+  if(!remove)
+    x ^= (one_hot_cpp(max_size + 1) - 1);
   Rcpp::NumericVector res(bitcount(x));
   int i = 0, pos = 0;
   
@@ -243,4 +267,18 @@ Rcpp::NumericVector find_open_bits(int x){
   }
   
   return res;
+}
+
+// Just a debug function to try out stuff
+// [[Rcpp::export]]
+int debug_cpp(){
+  std::vector<Rcpp::NumericVector> res(3);
+  NumericVector tmp, pos_idx;
+  int pos;
+  
+  tmp = seq(0, 10);
+  pos_idx = sample(tmp, 1, false);
+  pos = pos_idx[0];
+  
+  return pos;
 }

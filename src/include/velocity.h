@@ -6,6 +6,7 @@ using namespace Rcpp;
 
 #include "utils.h"
 #include "causality_list.h"
+#include <vector>
 
 #ifndef vl_op
 #define vl_op

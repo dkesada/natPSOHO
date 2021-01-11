@@ -52,6 +52,10 @@ one_hot_cpp <- function(nat) {
     .Call('_natPsoho_one_hot_cpp', PACKAGE = 'natPsoho', nat)
 }
 
+debug_cpp <- function() {
+    .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho')
+}
+
 #' Substracts two Positions to obtain the Velocity that transforms one into the other
 #' 
 #' @param cl the first position's causal list
@@ -88,11 +92,12 @@ nat_vel_plus_vel_cpp <- function(vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2) {
 #' Multiply a Velocity by a constant real number
 #' 
 #' @param k the constant real number
-#' @param vl the Velocity's causal list
+#' @param vl the Velocity's positive causal list
+#' @param vl_neg the Velocity's negative causal list
 #' @param abs_op the final number of {1,-1} operations
 #' @param max_op the maximum number of directions in the causal list
-#' @return a list with the Velocity's new causal list and number of operations
-cte_times_vel_cpp <- function(k, vl, abs_op, max_op) {
-    .Call('_natPsoho_cte_times_vel_cpp', PACKAGE = 'natPsoho', k, vl, abs_op, max_op)
+#' @return the new total number of operations 
+nat_cte_times_vel_cpp <- function(k, vl, vl_neg, abs_op, max_size) {
+    .Call('_natPsoho_nat_cte_times_vel_cpp', PACKAGE = 'natPsoho', k, vl, vl_neg, abs_op, max_size)
 }
 

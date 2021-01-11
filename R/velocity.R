@@ -90,6 +90,14 @@ natVelocity <- R6::R6Class("natVelocity",
     cte_times_velocity = function(k){
       # initial_numeric_check(k) --ICO-Merge
       
+      # If k < 0, invert the cl and the cl_neg
+      if(k < 0){ 
+        tmp <- private$cl
+        private$cl <- private$cl_neg
+        private$cl_neg <- tmp
+        k <- abs(k)
+      }
+      
       if(k == 0){
         private$cl <- rep(0, length(private$cl))
         private$cl_neg <- private$cl
