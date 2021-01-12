@@ -208,30 +208,20 @@ Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVecto
 //
 // @param cl the positive causal list
 // @param cl_neg the negative causal list
-// @param max_size if 0 will search for integers greater than 0. Will search for < max_size otherwise.
-// @return a NumericVector with the open positions
-std::vector<Rcpp::NumericVector> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::NumericVector &cl_neg, int max_size){
-  std::vector<Rcpp::NumericVector> res(cl.size()*2);
-  bool add = max_size;
+// @param max_int if 0 will search for integers greater than 0. Will search for < max_int otherwise.
+// @return a vector with the open positions
+std::vector<int> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::NumericVector &cl_neg, int max_int){
+  std::vector<int> res(cl.size());
+  bool add = max_int;
   int pos, pos_neg, j = 0;
   
   for(int i = 0; i < cl.size(); i++){
-    Rcpp::NumericVector element(2);
-    Rcpp::NumericVector element_neg(2);
     pos = cl[i];
     pos_neg = cl_neg[i];
+    pos |= pos_neg; // Remainder: arcs are shared between the positive and negative cl, so the number is obtained as a combination of both
     
-    if((add && pos < max_size) || (!add && pos > 0)){
-      element[0] = pos;
-      element[1] = 0;
-      res[j] = element;
-      j++;
-    }
-    
-    if((add && pos_neg < max_size) || (!add && pos_neg > 0)){
-      element_neg[0] = pos_neg;
-      element_neg[1] = 1;
-      res[j] = element_neg;
+    if((add && pos < max_int) || (!add && pos > 0)){
+      res[j] = i;
       j++;
     }
   }
@@ -250,12 +240,13 @@ std::vector<Rcpp::NumericVector> find_open_positions(const Rcpp::NumericVector &
 //
 // @param x the integer to process
 // @param remove if true, will search for bits set to 1. Will search for 0s otherwise.
+// @param max_int the maximum integer allowed, i.e., the one with all possible bits set to 1
 // @return a NumericVector with the open bits
-Rcpp::NumericVector find_open_bits(int x, bool remove, int max_size){
+Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int){
   if(!remove)
-    x ^= (one_hot_cpp(max_size + 1) - 1);
+    x ^= max_int;
   Rcpp::NumericVector res(bitcount(x));
-  int i = 0, pos = 0;
+  int i = 0, pos = 1;
   
   while(x != 0){
     if(x % 2){

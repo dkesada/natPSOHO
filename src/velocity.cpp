@@ -108,13 +108,13 @@ void add_nat_vel(int &num1, int num2, int &abs_op){
 //' @return the new total number of operations 
 // [[Rcpp::export]]
 int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector &vl_neg, int abs_op, int max_size){
-  int res, max_op, n_op, pos, item_idx, pos_idx, bit_idx, origin, max_int;
+  int res, max_op, n_op, pos, pos_neg, pos_mix, pool_idx, pos_idx, bit_idx, bit_dest, max_int;
   bool remove;
-  std::vector<Rcpp::NumericVector> pool, pool_item;
-  Rcpp::NumericVector item_samp, bit_pool, bit_samp;
+  std::vector<int> pool;
+  Rcpp::NumericVector pool_samp, bit_pool, bit_samp;
   
+  max_int = one_hot_cpp(max_size) - 1;
   max_op = (max_size - 1) * vl.size();
-  max_int = one_hot_cpp(max_size + 1) - 1;
   
   n_op = floor(k * abs_op);
   if(n_op > max_op)
@@ -122,56 +122,60 @@ int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector 
   res = n_op;
   
   n_op = abs_op - n_op;
-  remove = n_op < 0; // Whether to add or remove arcs
+  remove = n_op > 0; // Whether to add or remove arcs
   n_op = std::abs(n_op);
   
   // Find a pool of possible integers in the cl and cl_neg to operate
   if(remove)
     pool = find_open_positions(vl, vl_neg, 0);
   else
-    pool = find_open_positions(vl, vl_neg, one_hot_cpp(max_size + 1) - 1);
+    pool = find_open_positions(vl, vl_neg, max_int);
   
   for(int i = 0; i < n_op; i++){
     // Sample a position from the pool
-    item_samp = seq(0, pool.size() - 1);
-    item_samp = sample(item_samp, 1, false);
-    item_idx = item_samp[0];
-    item_samp = pool[item_idx];
+    pool_samp = seq(0, pool.size() - 1);
+    pool_samp = sample(pool_samp, 1, false);
+    pool_idx = pool_samp[0];
+    pos_idx = pool[pool_idx];
     
     // Find the pool of bits in that position
-    pos_idx = item_samp[0];
-    origin = item_samp[1];
-    if(origin)
-      pos = vl_neg[pos_idx];
-    else
-      pos = vl[pos_idx];
-    bit_pool = find_open_bits(pos, remove, max_size);
-    Rcpp::Rcout << "\n Pool equals: " << pool.size() << "\n";
+    pos = vl[pos_idx];
+    pos_neg = vl_neg[pos_idx];
+    pos_mix = pos | pos_neg;
+    bit_pool = find_open_bits(pos_mix, remove, max_int);
+    
     // Sample a bit and add it or remove it
-    Rcpp::Rcout << bit_pool.size();
-    bit_samp = seq(0, bit_pool.size() - 1);
-    Rcpp::Rcout << "---------------------ok---------------------";
+    bit_samp = seq(0, bit_pool.size() - 1); // Sample the selected bit
     bit_samp = sample(bit_samp, 1, false);
     bit_idx = bit_samp[0];
     bit_idx = bit_pool[bit_idx];
     
     if(remove){
-      pos ^= one_hot_cpp(bit_idx);
-      if(pos == 0)
-        pool.erase(pool.begin() + item_idx);
+      if(pos & one_hot_cpp(bit_idx))
+        pos ^= one_hot_cpp(bit_idx);
+      else
+        pos_neg ^= one_hot_cpp(bit_idx);
+      pos_mix = pos | pos_neg;
+      if(pos_mix == 0)
+        pool.erase(pool.begin() + pool_idx);
     }
     
     else{
-      pos |= one_hot_cpp(bit_idx);
-      if(pos == max_int)
-        pool.erase(pool.begin() + item_idx);
+      bit_samp = seq(0, 1); // Sample whether to add the bit in the positive or negative cl
+      bit_samp = sample(bit_samp, 1, false);
+      bit_dest = bit_samp[0];
+      if(bit_dest)
+        pos_neg |= one_hot_cpp(bit_idx);
+      else
+        pos |= one_hot_cpp(bit_idx);
+      pos_mix = pos | pos_neg;
+      if(pos_mix == max_int)
+        pool.erase(pool.begin() + pool_idx);
     }
     
     // Save the modification of the velocity
-    if(origin)
-      vl_neg[pos_idx] = pos;
-    else
-      vl[pos_idx] = pos;
+    vl[pos_idx] = pos;
+    vl_neg[pos_idx] = pos_neg;
   }
   
   return res;

@@ -56,81 +56,49 @@ test_that("cte times velocity works", {
   set.seed(42)
   vl$randomize_velocity(c(15,60,25))
   
-  print(vl$get_cl())
-  print(vl$get_cl_neg())
   vl$cte_times_velocity(1.3)
 
-  res_cl <- c(0,2,0,0,3,0,0,0,0)
-  res_cl_neg <- c(3,0,0,0,0,0,3,0,0)
+  res_cl <- c(0,2,0,0,3,0,0,0,2)
+  res_cl_neg <- c(3,0,0,0,0,1,3,0,0)
 
   expect_equal(vl$get_cl(), res_cl)
   expect_equal(vl$get_cl_neg(), res_cl_neg)
-  expect_equal(vl$get_abs_op(), 14)
+  expect_equal(vl$get_abs_op(), 9)
+  
+  vl$cte_times_velocity(-1)
 
-  # vl$cte_times_velocity(-5.3)
-  # 
-  # res <- list(
-  #   list(
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(1,1,-1)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(-1,-1,1)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(-1,1,-1))),
-  #   list(
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(-1,1,-1)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(1,-1,1)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(1,1,-1)))
-  # )
-  # 
-  # expect_equal(vl$get_cl(), res)
-  # expect_equal(vl$get_abs_op(), 18)
-  # 
-  # vl$cte_times_velocity(-0.3)
-  # 
-  # res <- list(
-  #   list(
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,-1,0)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,1,-1)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,-1,1))),
-  #   list(
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)))
-  # )
-  # 
-  # expect_equal(vl$get_cl(), res)
-  # expect_equal(vl$get_abs_op(), 5)
-  # 
-  # vl$cte_times_velocity(0.1)
-  # 
-  # res <- list(
-  #   list(
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,0,0)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,0,0)),
-  #     list(c("A_t_1", "B_t_1", "C_t_1"),
-  #          c(0,0,0))),
-  #   list(
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)),
-  #     list(c("A_t_2", "B_t_2", "C_t_2"),
-  #          c(0,0,0)))
-  # )
-  # 
-  # expect_equal(vl$get_cl(), res)
-  # expect_equal(vl$get_abs_op(), 0)
+  res_cl <- c(3,0,0,0,0,1,3,0,0)
+  res_cl_neg <- c(0,2,0,0,3,0,0,0,2)
+
+  expect_equal(vl$get_cl(), res_cl)
+  expect_equal(vl$get_cl_neg(), res_cl_neg)
+  expect_equal(vl$get_abs_op(), 9)
+
+  vl$cte_times_velocity(-5.3)
+
+  res_cl <- c(0,3,3,0,3,2,0,0,2)
+  res_cl_neg <- c(3,0,0,3,0,1,3,3,1)
+
+  expect_equal(vl$get_cl(), res_cl)
+  expect_equal(vl$get_cl_neg(), res_cl_neg)
+  expect_equal(vl$get_abs_op(), 18)
+
+  vl$cte_times_velocity(-0.3)
+
+  res_cl <- c(1,0,0,1,0,0,1,0,1)
+  res_cl_neg <- c(0,0,0,0,1,0,0,0,0)
+  
+  expect_equal(vl$get_cl(), res_cl)
+  expect_equal(vl$get_cl_neg(), res_cl_neg)
+  expect_equal(vl$get_abs_op(), 5)
+
+  vl$cte_times_velocity(0.1)
+
+  res_cl <- c(0,0,0,0,0,0,0,0,0)
+  res_cl_neg <- c(0,0,0,0,0,0,0,0,0)
+  
+  expect_equal(vl$get_cl(), res_cl)
+  expect_equal(vl$get_cl_neg(), res_cl_neg)
+  expect_equal(vl$get_abs_op(), 0)
 })
 
