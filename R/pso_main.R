@@ -32,7 +32,10 @@ learn_dbn_structure_pso <- function(dt, size, n_inds = 50, n_it = 50,
   return(ctrl$get_best_network())
 }
 
-# Just a debug function to try out stuff
+#' Just a debug function to try out rcpp stuff
+#' 
+#' Modify 'debug_cpp' to test behaviours and interactions down in C++
+#' @return whatever you want to return in the testing
 #' @export
 debug_foo <- function(){
   res <- debug_cpp()

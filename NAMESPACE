@@ -3,4 +3,6 @@
 export(debug_foo)
 export(learn_dbn_structure_pso)
 importFrom(Rcpp,sourceCpp)
+importFrom(dbnR,fold_dt)
+importFrom(stats,runif)
 useDynLib(natPsoho)

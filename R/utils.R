@@ -19,6 +19,7 @@ one_hot <- function(nat){
 #' @param p the parameter of the geometric distribution
 #' @param max the maximum value allowed to be sampled
 #' @return the sampled value
+#' @importFrom stats runif
 trunc_geom <- function(p, max){
   return(floor(log(1 - runif(1)*(1 - (1 - p)^max)) / log(1 - p)))
 }

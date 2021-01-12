@@ -13,12 +13,12 @@ Rcpp::NumericVector create_natcauslist_cpp(Rcpp::NumericVector &cl, Rcpp::List &
   std::string node;
     
   // Translation into natural causal list
-  for(unsigned int i = 0; i < ordering.size(); i++){
+  for(int i = 0; i < ordering.size(); i++){
     node = ordering[i];
     aux = net[node];
     parents = aux["parents"];
 
-    for(unsigned int j = 0; j < parents.size(); j++){
+    for(int j = 0; j < parents.size(); j++){
       node = parents[j];
       insert_node_natcl(cl, ordering, node, i);
     }
@@ -40,7 +40,7 @@ Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(const Rcpp::NumericVector &cl, Rcpp::
   int slice, j, k;
   k = 0;
   
-  for(unsigned int i = 0; i < cl.size(); i++){
+  for(int i = 0; i < cl.size(); i++){
     slice = cl[i];
     j = 1;
 
@@ -69,11 +69,11 @@ Rcpp::List pos_plus_vel_cpp(Rcpp::List &cl, Rcpp::List &vl, int n_arcs){
   Rcpp::NumericVector dirs_cl, dirs_vl;
   Rcpp::List res (2);
   
-  for(unsigned int i = 0; i < cl.size(); i++){
+  for(int i = 0; i < cl.size(); i++){
     slice_cl = cl[i];
     slice_vl = vl[i];
     
-    for(unsigned int j = 0; j < slice_cl.size(); j++){
+    for(int j = 0; j < slice_cl.size(); j++){
       pair_cl = slice_cl[j];
       pair_vl = slice_vl[j];
       dirs_cl = pair_cl[1];

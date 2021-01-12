@@ -13,12 +13,12 @@ Rcpp::List pos_minus_pos_cpp(Rcpp::List &cl, Rcpp::List &ps, Rcpp::List &vl){
   int n_abs = 0;
   Rcpp::List res (2);
   
-  for(unsigned int i = 0; i < cl.size(); i++){
+  for(int i = 0; i < cl.size(); i++){
     slice_cl = cl[i];
     slice_ps = ps[i];
     slice_vl = vl[i];
     
-    for(unsigned int j = 0; j < slice_cl.size(); j++){
+    for(int j = 0; j < slice_cl.size(); j++){
       pair_cl = slice_cl[j];
       pair_ps = slice_ps[j];
       pair_vl = slice_vl[j];
@@ -65,7 +65,7 @@ int nat_vel_plus_vel_cpp(Rcpp::NumericVector &vl1, Rcpp::NumericVector &vl1_neg,
   int pos1, pos2, neg1, neg2, mask, res;
   
   res = abs_op1 + abs_op2;
-  for(unsigned int i = 0; i < vl1.size(); i++){
+  for(int i = 0; i < vl1.size(); i++){
     pos1 = vl1[i];
     pos2 = vl2[i];
     neg1 = vl1_neg[i];
@@ -104,7 +104,7 @@ void add_nat_vel(int &num1, int num2, int &abs_op){
 //' @param vl the Velocity's positive causal list
 //' @param vl_neg the Velocity's negative causal list
 //' @param abs_op the final number of {1,-1} operations
-//' @param max_op the maximum number of directions in the causal list
+//' @param max_size the maximum size of the network
 //' @return the new total number of operations 
 // [[Rcpp::export]]
 int nat_cte_times_vel_cpp(float k, Rcpp::NumericVector &vl, Rcpp::NumericVector &vl_neg, int abs_op, int max_size){

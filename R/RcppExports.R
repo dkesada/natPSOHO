@@ -95,7 +95,7 @@ nat_vel_plus_vel_cpp <- function(vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2) {
 #' @param vl the Velocity's positive causal list
 #' @param vl_neg the Velocity's negative causal list
 #' @param abs_op the final number of {1,-1} operations
-#' @param max_op the maximum number of directions in the causal list
+#' @param max_size the maximum size of the network
 #' @return the new total number of operations 
 nat_cte_times_vel_cpp <- function(k, vl, vl_neg, abs_op, max_size) {
     .Call('_natPsoho_nat_cte_times_vel_cpp', PACKAGE = 'natPsoho', k, vl, vl_neg, abs_op, max_size)

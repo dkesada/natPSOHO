@@ -121,7 +121,7 @@ int add_dirs(int d1, int d2, int &n_arcs){
 Rcpp::NumericVector add_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &n_arcs){
   Rcpp::NumericVector res (d1.size());
   
-  for(unsigned int i = 0; i < d1.size(); i++){
+  for(int i = 0; i < d1.size(); i++){
     res[i] = add_dirs(d1[i], d2[i], n_arcs);
   }
   
@@ -152,7 +152,7 @@ int subtract_dirs(int d1, int d2, int &n_abs){
 Rcpp::NumericVector subtract_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &n_abs){
   Rcpp::NumericVector res (d1.size());
   
-  for(unsigned int i = 0; i < d1.size(); i++){
+  for(int i = 0; i < d1.size(); i++){
     res[i] = subtract_dirs(d1[i], d2[i], n_abs);
   }
   
@@ -194,7 +194,7 @@ int add_vel_dirs(int d1, int d2, int &abs_op){
 Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &abs_op){
   Rcpp::NumericVector res (d1.size());
   
-  for(unsigned int i = 0; i < d1.size(); i++){
+  for(int i = 0; i < d1.size(); i++){
     res[i] = add_vel_dirs(d1[i], d2[i], abs_op);
   }
   

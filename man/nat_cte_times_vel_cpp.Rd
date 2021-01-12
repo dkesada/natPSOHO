@@ -15,7 +15,7 @@ nat_cte_times_vel_cpp(k, vl, vl_neg, abs_op, max_size)
 
 \item{abs_op}{the final number of {1,-1} operations}
 
-\item{max_op}{the maximum number of directions in the causal list}
+\item{max_size}{the maximum size of the network}
 }
 \value{
 the new total number of operations
