@@ -1,7 +1,7 @@
 #' R6 class that defines a Particle in the PSO algorithm
 #' 
 #' A particle has a Position, a Velocity and a local best
-Particle <- R6::R6Class("Particle",
+natParticle <- R6::R6Class("natParticle",
  public = list(
    #' @description 
    #' Constructor of the 'Particle' class
@@ -11,8 +11,8 @@ Particle <- R6::R6Class("Particle",
    initialize = function(ordering, size, v_probs){
      #initial_size_check(size) --ICO-Merge
      
-     private$ps <- Position$new(NULL, size, ordering)
-     private$vl <- Velocity$new(private$ps$get_ordering(), size)
+     private$ps <- natPosition$new(NULL, size, ordering)
+     private$vl <- natVelocity$new(private$ps$get_ordering(), size)
      private$vl$randomize_velocity(v_probs)
      private$lb <- -Inf
    },

@@ -18,6 +18,6 @@ void include_arc(Rcpp::StringMatrix &res, const Rcpp::StringVector &ordering, in
 int find_index(const Rcpp::StringVector &ordering, std::string node);
 std::vector<int> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::NumericVector &cl_neg, int max_int);
 Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int);
-int bitwise_sub(int pos, int vel);
+int bitwise_sub(int x1, int x2);
 int debug_cpp();
 #endif

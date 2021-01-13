@@ -88,7 +88,7 @@ PsoCtrl <- R6::R6Class("PsoCtrl",
       #private$parts <- parallel::parLapply(private$cl,1:n_inds, function(i){Particle$new(ordering, size)})
       private$parts <- vector(mode = "list", length = n_inds)
       for(i in 1:n_inds)
-        private$parts[[i]] <- Particle$new(ordering, size, v_probs)
+        private$parts[[i]] <- natParticle$new(ordering, size, v_probs)
     },
     
     #' @description 
