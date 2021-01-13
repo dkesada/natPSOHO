@@ -60,8 +60,8 @@ natPosition <- R6::R6Class("natPosition",
     #' @description 
     #' Add a velocity to the position
     #' 
-    #' Given a Velocity object, add it to the current position.
-    #' @param vl a Velocity object
+    #' Given a natVelocity object, add it to the current position.
+    #' @param vl a natVelocity object
     add_velocity = function(vl){
       private$n_arcs <- nat_pos_plus_vel_cpp(private$cl, vl$get_cl(), vl$get_cl_neg(), private$n_arcs)
     },
@@ -70,10 +70,10 @@ natPosition <- R6::R6Class("natPosition",
     #' Given another position, returns the velocity that gets this position to the
     #' other.
     #' 
-    #' @param ps a Position object
-    #' return the Velocity that gets this position to the new one
+    #' @param ps a natPosition object
+    #' return the natVelocity that gets this position to the new one
     subtract_position = function(ps){
-      res <- Velocity$new(private$ordering, private$size)
+      res <- natVelocity$new(private$ordering, private$size)
       res$subtract_positions(self, ps)
       
       return(res)
@@ -148,7 +148,7 @@ natPosition <- R6::R6Class("natPosition",
     recount_arcs = function(){
       private$n_arcs <- 0
       for(i in 1:length(private$cl))
-        private$n_arcs <- private$n_arcs + count_bits(private$cl[i])
+        private$n_arcs <- private$n_arcs + bitcount(private$cl[i])
       
       return(private$n_arcs)
     }

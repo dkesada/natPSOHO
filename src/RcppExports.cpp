@@ -69,6 +69,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// bitcount
+int bitcount(unsigned x);
+RcppExport SEXP _natPsoho_bitcount(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(bitcount(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // debug_cpp
 int debug_cpp();
 RcppExport SEXP _natPsoho_debug_cpp() {
@@ -130,6 +141,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_nat_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_pos_plus_vel_cpp, 4},
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
+    {"_natPsoho_bitcount", (DL_FUNC) &_natPsoho_bitcount, 1},
     {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 0},
     {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},

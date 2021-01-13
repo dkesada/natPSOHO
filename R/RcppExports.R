@@ -53,6 +53,10 @@ one_hot_cpp <- function(nat) {
     .Call('_natPsoho_one_hot_cpp', PACKAGE = 'natPsoho', nat)
 }
 
+bitcount <- function(x) {
+    .Call('_natPsoho_bitcount', PACKAGE = 'natPsoho', x)
+}
+
 debug_cpp <- function() {
     .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho')
 }

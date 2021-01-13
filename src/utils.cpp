@@ -27,6 +27,7 @@ int one_hot_cpp(int nat){
 //   x = (x & 0x0000FFFF) + ((x >> 16)& 0x0000FFFF);
 //   return x;
 // }
+// [[Rcpp::export]]
 int bitcount(unsigned x){
   x = x - ((x >> 1) & 0x55555555);
   x = (x & 0x33333333) + ((x >> 2) & 0x33333333);

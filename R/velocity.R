@@ -48,11 +48,11 @@ natVelocity <- R6::R6Class("natVelocity",
         op <- rmultinom(n = 1, size = 1, prob = probs)
         if(op[3] == 1){
           private$cl[i] <- trunc_geom(p, 2^(private$max_size - 1))
-          private$abs_op <- private$abs_op + count_bits(private$cl[i])
+          private$abs_op <- private$abs_op + bitcount(private$cl[i])
         }
         else if (op[1] == 1){
           private$cl_neg[i] <- trunc_geom(p, 2^(private$max_size - 1))
-          private$abs_op <- private$abs_op + count_bits(private$cl_neg[i])
+          private$abs_op <- private$abs_op + bitcount(private$cl_neg[i])
         }
       }
     },

@@ -23,18 +23,3 @@ one_hot <- function(nat){
 trunc_geom <- function(p, max){
   return(floor(log(1 - runif(1)*(1 - (1 - p)^max)) / log(1 - p)))
 }
-
-#' Count the number of bits set to 1 in a positive natural number
-#' 
-#' @param x the objective number
-#' @return the number of bits
-count_bits <- function(x){
-  res <- 0
-  while(x > 0){
-    if(x %% 2 == 1)
-      res <- res + 1
-    x <- bitwShiftR(x,1)
-  }
-  
-  return(res)
-}

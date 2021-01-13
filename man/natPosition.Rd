@@ -7,10 +7,10 @@
 \item{nodes}{A list with the names of the nodes in t_0 in the network
 If its not null, a random position will be generated for those nodes.}
 
-\item{vl}{a Velocity object}
+\item{vl}{a natVelocity object}
 
-\item{ps}{a Position object
-return the Velocity that gets this position to the new one}
+\item{ps}{a natPosition object
+return the natVelocity that gets this position to the new one}
 
 \item{net}{a dbn object}
 
@@ -43,7 +43,7 @@ Uses this object private causality list and transforms it into a DBN.
 
 Add a velocity to the position
 
-Given a Velocity object, add it to the current position.
+Given a natVelocity object, add it to the current position.
 
 Given another position, returns the velocity that gets this position to the
 other.
