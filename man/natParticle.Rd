@@ -6,7 +6,11 @@
 \arguments{
 \item{ordering}{a vector with the names of the nodes in t_0}
 
-\item{size}{number of timeslices of the DBN}
+\item{max_size}{maximum number of timeslices of the DBN}
+
+\item{v_probs}{vector of probabilities for the velocity sampling}
+
+\item{p}{parameter of the truncated geometric distribution}
 
 \item{dt}{dataset to evaluate the fitness of the particle}
 
@@ -21,12 +25,12 @@
 \item{r_probs}{vector that defines the range of random variation of gb_cte and lb_cte}
 }
 \value{
-A new 'Particle' object
+A new 'natParticle' object
 
 The score of the current position
 }
 \description{
-Constructor of the 'Particle' class
+Constructor of the 'natParticle' class
 
 Evaluate the score of the particle's position
 

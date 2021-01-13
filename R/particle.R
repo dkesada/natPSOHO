@@ -6,15 +6,15 @@ natParticle <- R6::R6Class("natParticle",
    #' @description 
    #' Constructor of the 'natParticle' class
    #' @param ordering a vector with the names of the nodes in t_0
-   #' @param size number of timeslices of the DBN
+   #' @param max_size maximum number of timeslices of the DBN
    #' @param v_probs vector of probabilities for the velocity sampling
    #' @param p parameter of the truncated geometric distribution 
    #' @return A new 'natParticle' object
-   initialize = function(ordering, size, v_probs, p){
+   initialize = function(ordering, max_size, v_probs, p){
      #initial_size_check(size) --ICO-Merge
      
-     private$ps <- natPosition$new(NULL, size, ordering, p)
-     private$vl <- natVelocity$new(private$ps$get_ordering(), size)
+     private$ps <- natPosition$new(NULL, max_size, ordering, p)
+     private$vl <- natVelocity$new(private$ps$get_ordering(), max_size)
      private$vl$randomize_velocity(v_probs, p)
      private$lb <- -Inf
    },

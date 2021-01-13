@@ -6,24 +6,25 @@
 \usage{
 learn_dbn_structure_pso(
   dt,
-  size,
+  max_size,
   n_inds = 50,
   n_it = 50,
   in_cte = 1,
   gb_cte = 0.5,
   lb_cte = 0.5,
   v_probs = c(10, 65, 25),
+  p = 0.06,
   r_probs = c(-0.5, 1.5)
 )
 }
 \arguments{
 \item{dt}{a data.table with the data of the network to be trained. Previously folded with the 'dbnR' package or other means.}
 
-\item{size}{Number of timeslices of the DBN. Markovian order 1 equals size 2, and so on.}
+\item{max_size}{maximum number of timeslices of the DBN. Markovian order 1 equals size 2, and so on.}
 
-\item{n_inds}{Number of particles used in the algorithm.}
+\item{n_inds}{number of particles used in the algorithm.}
 
-\item{n_it}{Maximum number of iterations that the algorithm can perform.}
+\item{n_it}{maximum number of iterations that the algorithm can perform.}
 
 \item{in_cte}{parameter that varies the effect of the inertia}
 
@@ -32,6 +33,8 @@ learn_dbn_structure_pso(
 \item{lb_cte}{parameter that varies the effect of the local best}
 
 \item{v_probs}{vector that defines the random velocity initialization probabilities}
+
+\item{p}{parameter of the truncated geometric distribution for sampling edges}
 
 \item{r_probs}{vector that defines the range of random variation of gb_cte and lb_cte}
 }

@@ -32,16 +32,6 @@ nat_pos_plus_vel_cpp <- function(cl, vl, vl_neg, n_arcs) {
     .Call('_natPsoho_nat_pos_plus_vel_cpp', PACKAGE = 'natPsoho', cl, vl, vl_neg, n_arcs)
 }
 
-#' Initialize the particles
-#' 
-#' @param nodes the names of the nodes
-#' @param size the size of the DBN
-#' @param n_inds the number of particles
-#' @return a list with the randomly initialized particles
-init_list_cpp <- function(nodes, size, n_inds) {
-    .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', nodes, size, n_inds)
-}
-
 #' One-hot encoder for natural numbers without the 0
 #' 
 #' Given a natural number, return the natural number equivalent to its
@@ -57,8 +47,22 @@ bitcount <- function(x) {
     .Call('_natPsoho_bitcount', PACKAGE = 'natPsoho', x)
 }
 
-debug_cpp <- function() {
-    .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho')
+#' Initialize the particles
+#' 
+#' Initialize the list with particles in C++. It is equivalent to initializing
+#' them in R, so this will be dropped. --ICO-Merge: delete if obsolete
+#' @param ordering the names of the nodes
+#' @param max_size the maximum size of the DBN
+#' @param n_inds the number of particles
+#' @param v_probs vector that defines the random velocity initialization probabilities
+#' @param p parameter of the truncated geometric distribution for sampling edges
+#' @return a list with the randomly initialized particles
+init_list_cpp <- function(ordering, max_size, n_inds, v_probs, p) {
+    .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', ordering, max_size, n_inds, v_probs, p)
+}
+
+debug_cpp <- function(ordering, max_size, n_inds, v_probs, p) {
+    .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho', ordering, max_size, n_inds, v_probs, p)
 }
 
 #' Substracts two natPositions to obtain the natVelocity that transforms ps1 into ps2

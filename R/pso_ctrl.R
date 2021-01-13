@@ -1,26 +1,27 @@
 #' R6 class that defines the PSO controller
 #' 
 #' The controller will encapsulate the particles and run the algorithm
-PsoCtrl <- R6::R6Class("PsoCtrl",
+natPsoCtrl <- R6::R6Class("natPsoCtrl",
   public = list(
     #' @description 
-    #' Constructor of the 'PsoCtrl' class
+    #' Constructor of the 'natPsoCtrl' class
     #' @param ordering a vector with the names of the nodes in t_0
-    #' @param size number of timeslices of the DBN
+    #' @param max_size maximum number of timeslices of the DBN
     #' @param n_inds number of particles that the algorithm will simultaneously process
     #' @param n_it maximum number of iterations of the pso algorithm
     #' @param in_cte parameter that varies the effect of the inertia
     #' @param gb_cte parameter that varies the effect of the global best
     #' @param lb_cte parameter that varies the effect of the local best
     #' @param v_probs vector that defines the random velocity initialization probabilities
+    #' @param p parameter of the truncated geometric distribution for sampling edges
     #' @param r_probs vector that defines the range of random variation of gb_cte and lb_cte
-    #' @return A new 'PsoCtrl' object
-    initialize = function(ordering, size, n_inds, n_it, in_cte, gb_cte, lb_cte,
-                          v_probs, r_probs){
+    #' @return A new 'natPsoCtrl' object
+    initialize = function(ordering, max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
+                          v_probs, p, r_probs){
       #initial_size_check(size) --ICO-Merge
       # Missing security checks --ICO-Merge
       
-      private$initialize_particles(ordering, size, n_inds, v_probs)
+      private$initialize_particles(ordering, max_size, n_inds, v_probs, p)
       private$gb_scr <- -Inf
       private$n_it <- n_it
       private$in_cte <- in_cte
@@ -81,14 +82,15 @@ PsoCtrl <- R6::R6Class("PsoCtrl",
     #' @description 
     #' Initialize the particles for the algorithm to random positions and velocities.
     #' @param ordering a vector with the names of the nodes in t_0
-    #' @param size number of timeslices of the DBN
+    #' @param max_size maximum number of timeslices of the DBN
     #' @param n_inds number of particles that the algorithm will simultaneously process
     #' @param v_probs vector that defines the random velocity initialization probabilities
-    initialize_particles = function(ordering, size, n_inds, v_probs){
+    #' @param p parameter of the truncated geometric distribution for sampling edges
+    initialize_particles = function(ordering, max_size, n_inds, v_probs, p){
       #private$parts <- parallel::parLapply(private$cl,1:n_inds, function(i){Particle$new(ordering, size)})
       private$parts <- vector(mode = "list", length = n_inds)
       for(i in 1:n_inds)
-        private$parts[[i]] <- natParticle$new(ordering, size, v_probs)
+        private$parts[[i]] <- natParticle$new(ordering, max_size, v_probs, p)
     },
     
     #' @description 

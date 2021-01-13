@@ -163,16 +163,37 @@ int bitwise_sub(int x1, int x2){
   return x1 & (~x2);
 }
 
+//' Initialize the particles
+//' 
+//' Initialize the list with particles in C++. It is equivalent to initializing
+//' them in R, so this will be dropped. --ICO-Merge: delete if obsolete
+//' @param ordering the names of the nodes
+//' @param max_size the maximum size of the DBN
+//' @param n_inds the number of particles
+//' @param v_probs vector that defines the random velocity initialization probabilities
+//' @param p parameter of the truncated geometric distribution for sampling edges
+//' @return a list with the randomly initialized particles
+// [[Rcpp::export]]
+Rcpp::List init_list_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p){
+  Rcpp::List res (n_inds);
+  Environment psoho("package:natPsoho");
+  Environment env = psoho["natParticle"];
+  Function new_part = env["new"];
+  
+  
+  for(int i = 0; i < n_inds; i++){
+    Environment part;
+    part = new_part(ordering, max_size, v_probs, p);
+    res[i] = part;
+  }
+  
+  return res;
+}
+
 // Just a debug function to try out stuff
 // [[Rcpp::export]]
-int debug_cpp(){
-  std::vector<Rcpp::NumericVector> res(3);
-  NumericVector tmp, pos_idx;
-  int pos;
+Rcpp::List debug_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p){
+  Rcpp::List res = init_list_cpp(ordering, max_size, n_inds, v_probs, p);
   
-  tmp = seq(0, 10);
-  pos_idx = sample(tmp, 1, false);
-  pos = pos_idx[0];
-  
-  return pos;
+  return res;
 }

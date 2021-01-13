@@ -45,19 +45,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// init_list_cpp
-Rcpp::List init_list_cpp(Rcpp::StringVector nodes, unsigned int size, unsigned int n_inds);
-RcppExport SEXP _natPsoho_init_list_cpp(SEXP nodesSEXP, SEXP sizeSEXP, SEXP n_indsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::StringVector >::type nodes(nodesSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type n_inds(n_indsSEXP);
-    rcpp_result_gen = Rcpp::wrap(init_list_cpp(nodes, size, n_inds));
-    return rcpp_result_gen;
-END_RCPP
-}
 // one_hot_cpp
 int one_hot_cpp(int nat);
 RcppExport SEXP _natPsoho_one_hot_cpp(SEXP natSEXP) {
@@ -80,13 +67,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// debug_cpp
-int debug_cpp();
-RcppExport SEXP _natPsoho_debug_cpp() {
+// init_list_cpp
+Rcpp::List init_list_cpp(const Rcpp::StringVector& ordering, int max_size, int n_inds, const Rcpp::NumericVector& v_probs, float p);
+RcppExport SEXP _natPsoho_init_list_cpp(SEXP orderingSEXP, SEXP max_sizeSEXP, SEXP n_indsSEXP, SEXP v_probsSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(debug_cpp());
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering(orderingSEXP);
+    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type n_inds(n_indsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type v_probs(v_probsSEXP);
+    Rcpp::traits::input_parameter< float >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(init_list_cpp(ordering, max_size, n_inds, v_probs, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// debug_cpp
+Rcpp::List debug_cpp(const Rcpp::StringVector& ordering, int max_size, int n_inds, const Rcpp::NumericVector& v_probs, float p);
+RcppExport SEXP _natPsoho_debug_cpp(SEXP orderingSEXP, SEXP max_sizeSEXP, SEXP n_indsSEXP, SEXP v_probsSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering(orderingSEXP);
+    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type n_inds(n_indsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type v_probs(v_probsSEXP);
+    Rcpp::traits::input_parameter< float >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(debug_cpp(ordering, max_size, n_inds, v_probs, p));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -140,10 +147,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_create_natcauslist_cpp", (DL_FUNC) &_natPsoho_create_natcauslist_cpp, 3},
     {"_natPsoho_cl_to_arc_matrix_cpp", (DL_FUNC) &_natPsoho_cl_to_arc_matrix_cpp, 3},
     {"_natPsoho_nat_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_pos_plus_vel_cpp, 4},
-    {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_bitcount", (DL_FUNC) &_natPsoho_bitcount, 1},
-    {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 0},
+    {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 5},
+    {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 5},
     {"_natPsoho_nat_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_nat_pos_minus_pos_cpp, 4},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},
     {"_natPsoho_nat_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_nat_cte_times_vel_cpp, 5},

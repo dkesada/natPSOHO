@@ -11,4 +11,6 @@ whatever you want to return in the testing
 }
 \description{
 Modify 'debug_cpp' to test behaviours and interactions down in C++
+Currently: testing initialization times in both R and C++
+Results: equivalent times, O(n) as it should be. Will leave the R initialization.
 }

@@ -4,18 +4,23 @@
 \alias{init_list_cpp}
 \title{Initialize the particles}
 \usage{
-init_list_cpp(nodes, size, n_inds)
+init_list_cpp(ordering, max_size, n_inds, v_probs, p)
 }
 \arguments{
-\item{nodes}{the names of the nodes}
+\item{ordering}{the names of the nodes}
 
-\item{size}{the size of the DBN}
+\item{max_size}{the maximum size of the DBN}
 
 \item{n_inds}{the number of particles}
+
+\item{v_probs}{vector that defines the random velocity initialization probabilities}
+
+\item{p}{parameter of the truncated geometric distribution for sampling edges}
 }
 \value{
 a list with the randomly initialized particles
 }
 \description{
-Initialize the particles
+Initialize the list with particles in C++. It is equivalent to initializing
+them in R, so this will be dropped. --ICO-Merge: delete if obsolete
 }
