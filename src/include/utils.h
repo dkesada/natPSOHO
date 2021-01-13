@@ -25,5 +25,6 @@ int add_vel_dirs(int d1, int d2, int &abs_op);
 Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &abs_op);
 std::vector<int> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::NumericVector &cl_neg, int max_int);
 Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int);
+int bitwise_sub_vel(int pos, int vel);
 int debug_cpp();
 #endif

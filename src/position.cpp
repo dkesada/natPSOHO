@@ -60,37 +60,28 @@ Rcpp::CharacterMatrix cl_to_arc_matrix_cpp(const Rcpp::NumericVector &cl, Rcpp::
 //' Add a velocity to a position
 //' 
 //' @param cl the position's causal list
-//' @param vl the velocity's causal list
-//' @param n_arcs number of arcs present in the position
-//' @return a list with the modified position and the new number of arcs
+//' @param vl the velocity's positive causal list
+//' @param vl_neg velocity's negative causal list
+//' @param n_arcs number of arcs present in the position. Remainder: can't return integers by reference, they get casted to 1 sized vectors
+//' @return the new position by reference and the new number of arcs by return
 // [[Rcpp::export]]
-Rcpp::List pos_plus_vel_cpp(Rcpp::List &cl, Rcpp::List &vl, int n_arcs){
-  Rcpp::List slice_cl, slice_vl, cu_cl, cu_vl, pair_cl, pair_vl;
-  Rcpp::NumericVector dirs_cl, dirs_vl;
-  Rcpp::List res (2);
+int nat_pos_plus_vel_cpp(Rcpp::NumericVector &cl, const Rcpp::NumericVector &vl, const Rcpp::NumericVector &vl_neg, int n_arcs){
+  int pos, new_pos, vl_i, vl_neg_i, n_prev, n_post;
   
   for(int i = 0; i < cl.size(); i++){
-    slice_cl = cl[i];
-    slice_vl = vl[i];
+    pos = cl[i];
+    vl_i = vl[i];
+    vl_neg_i = vl_neg[i];
+    new_pos = pos | vl_i;
+    new_pos = bitwise_sub_vel(new_pos, vl_neg_i);
+    n_prev = bitcount(pos);
+    n_post = bitcount(new_pos);
     
-    for(int j = 0; j < slice_cl.size(); j++){
-      pair_cl = slice_cl[j];
-      pair_vl = slice_vl[j];
-      dirs_cl = pair_cl[1];
-      dirs_vl = pair_vl[1];
-      dirs_cl = add_dirs_vec(dirs_cl, dirs_vl, n_arcs);
-      
-      pair_cl[1] = dirs_cl;
-      slice_cl[j] = pair_cl;
-    }
-    
-    cl[i] = slice_cl;
+    cl[i] = new_pos;
+    n_arcs += n_post - n_prev;
   }
   
-  res[0] = cl;
-  res[1] = n_arcs;
-  
-  return res;
+  return n_arcs;
 }
 
 //' Initialize the particles

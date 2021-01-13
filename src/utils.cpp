@@ -260,6 +260,16 @@ Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int){
   return res;
 }
 
+// Bitwise operator to remove 1s in the position when a 1 is in that same bit
+// in the velocity. The truth table is:
+//        vel
+//        0 1
+//  pos 0 0 0
+//      1 1 0
+int bitwise_sub_vel(int pos, int vel){
+  return pos & (~vel);
+}
+
 // Just a debug function to try out stuff
 // [[Rcpp::export]]
 int debug_cpp(){

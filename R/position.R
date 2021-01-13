@@ -63,9 +63,7 @@ natPosition <- R6::R6Class("natPosition",
     #' Given a Velocity object, add it to the current position.
     #' @param vl a Velocity object
     add_velocity = function(vl){
-      res = pos_plus_vel_cpp(private$cl, vl$get_cl(), private$n_arcs)
-      private$cl = res[[1]]
-      private$n_arcs = res[[2]]
+      private$n_arcs <- nat_pos_plus_vel_cpp(private$cl, vl$get_cl(), vl$get_cl_neg(), private$n_arcs)
     },
     
     #' @description 
@@ -148,11 +146,11 @@ natPosition <- R6::R6Class("natPosition",
     #' Recount the number of arcs in the cl
     #' @return the number of arcs
     recount_arcs = function(){
-      res <- 0
+      private$n_arcs <- 0
       for(i in 1:length(private$cl))
-        res <- res + count_bits(private$cl[i])
+        private$n_arcs <- private$n_arcs + count_bits(private$cl[i])
       
-      return(res)
+      return(private$n_arcs)
     }
     
   )

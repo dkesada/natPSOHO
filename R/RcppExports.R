@@ -24,11 +24,12 @@ cl_to_arc_matrix_cpp <- function(cl, ordering, rows) {
 #' Add a velocity to a position
 #' 
 #' @param cl the position's causal list
-#' @param vl the velocity's causal list
-#' @param n_arcs number of arcs present in the position
-#' @return a list with the modified position and the new number of arcs
-pos_plus_vel_cpp <- function(cl, vl, n_arcs) {
-    .Call('_natPsoho_pos_plus_vel_cpp', PACKAGE = 'natPsoho', cl, vl, n_arcs)
+#' @param vl the velocity's positive causal list
+#' @param vl_neg velocity's negative causal list
+#' @param n_arcs number of arcs present in the position. Remainder: can't return integers by reference, they get casted to 1 sized vectors
+#' @return the new position by reference and the new number of arcs by return
+nat_pos_plus_vel_cpp <- function(cl, vl, vl_neg, n_arcs) {
+    .Call('_natPsoho_nat_pos_plus_vel_cpp', PACKAGE = 'natPsoho', cl, vl, vl_neg, n_arcs)
 }
 
 #' Initialize the particles

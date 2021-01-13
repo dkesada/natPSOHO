@@ -31,16 +31,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// pos_plus_vel_cpp
-Rcpp::List pos_plus_vel_cpp(Rcpp::List& cl, Rcpp::List& vl, int n_arcs);
-RcppExport SEXP _natPsoho_pos_plus_vel_cpp(SEXP clSEXP, SEXP vlSEXP, SEXP n_arcsSEXP) {
+// nat_pos_plus_vel_cpp
+int nat_pos_plus_vel_cpp(Rcpp::NumericVector& cl, const Rcpp::NumericVector& vl, const Rcpp::NumericVector& vl_neg, int n_arcs);
+RcppExport SEXP _natPsoho_nat_pos_plus_vel_cpp(SEXP clSEXP, SEXP vlSEXP, SEXP vl_negSEXP, SEXP n_arcsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type cl(clSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl(vlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type cl(clSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vl(vlSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vl_neg(vl_negSEXP);
     Rcpp::traits::input_parameter< int >::type n_arcs(n_arcsSEXP);
-    rcpp_result_gen = Rcpp::wrap(pos_plus_vel_cpp(cl, vl, n_arcs));
+    rcpp_result_gen = Rcpp::wrap(nat_pos_plus_vel_cpp(cl, vl, vl_neg, n_arcs));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -126,7 +127,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_create_natcauslist_cpp", (DL_FUNC) &_natPsoho_create_natcauslist_cpp, 3},
     {"_natPsoho_cl_to_arc_matrix_cpp", (DL_FUNC) &_natPsoho_cl_to_arc_matrix_cpp, 3},
-    {"_natPsoho_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_pos_plus_vel_cpp, 3},
+    {"_natPsoho_nat_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_pos_plus_vel_cpp, 4},
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 3},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 0},
