@@ -10,7 +10,7 @@ If its not null, a random position will be generated for those nodes.}
 \item{vl}{a natVelocity object}
 
 \item{ps}{a natPosition object
-return the natVelocity that gets this position to the new one}
+return the natVelocity that gets the other position to this one}
 
 \item{net}{a dbn object}
 
@@ -45,8 +45,8 @@ Add a velocity to the position
 
 Given a natVelocity object, add it to the current position.
 
-Given another position, returns the velocity that gets this position to the
-other.
+Given another position, returns the velocity that gets it to this
+position.
 
 Return the static node ordering
 

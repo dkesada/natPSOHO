@@ -90,29 +90,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// pos_minus_pos_cpp
-Rcpp::List pos_minus_pos_cpp(Rcpp::List& cl, Rcpp::List& ps, Rcpp::List& vl);
-RcppExport SEXP _natPsoho_pos_minus_pos_cpp(SEXP clSEXP, SEXP psSEXP, SEXP vlSEXP) {
+// nat_pos_minus_pos_cpp
+int nat_pos_minus_pos_cpp(const Rcpp::NumericVector& ps1, const Rcpp::NumericVector& ps2, Rcpp::NumericVector& vl, Rcpp::NumericVector& vl_neg);
+RcppExport SEXP _natPsoho_nat_pos_minus_pos_cpp(SEXP ps1SEXP, SEXP ps2SEXP, SEXP vlSEXP, SEXP vl_negSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List& >::type cl(clSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List& >::type ps(psSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List& >::type vl(vlSEXP);
-    rcpp_result_gen = Rcpp::wrap(pos_minus_pos_cpp(cl, ps, vl));
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type ps1(ps1SEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type ps2(ps2SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl(vlSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl_neg(vl_negSEXP);
+    rcpp_result_gen = Rcpp::wrap(nat_pos_minus_pos_cpp(ps1, ps2, vl, vl_neg));
     return rcpp_result_gen;
 END_RCPP
 }
 // nat_vel_plus_vel_cpp
-int nat_vel_plus_vel_cpp(Rcpp::NumericVector& vl1, Rcpp::NumericVector& vl1_neg, Rcpp::NumericVector& vl2, Rcpp::NumericVector& vl2_neg, int abs_op1, int abs_op2);
+int nat_vel_plus_vel_cpp(Rcpp::NumericVector& vl1, Rcpp::NumericVector& vl1_neg, const Rcpp::NumericVector& vl2, const Rcpp::NumericVector& vl2_neg, int abs_op1, int abs_op2);
 RcppExport SEXP _natPsoho_nat_vel_plus_vel_cpp(SEXP vl1SEXP, SEXP vl1_negSEXP, SEXP vl2SEXP, SEXP vl2_negSEXP, SEXP abs_op1SEXP, SEXP abs_op2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl1(vl1SEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl1_neg(vl1_negSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl2(vl2SEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type vl2_neg(vl2_negSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vl2(vl2SEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vl2_neg(vl2_negSEXP);
     Rcpp::traits::input_parameter< int >::type abs_op1(abs_op1SEXP);
     Rcpp::traits::input_parameter< int >::type abs_op2(abs_op2SEXP);
     rcpp_result_gen = Rcpp::wrap(nat_vel_plus_vel_cpp(vl1, vl1_neg, vl2, vl2_neg, abs_op1, abs_op2));
@@ -143,7 +144,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_bitcount", (DL_FUNC) &_natPsoho_bitcount, 1},
     {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 0},
-    {"_natPsoho_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_pos_minus_pos_cpp, 3},
+    {"_natPsoho_nat_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_nat_pos_minus_pos_cpp, 4},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},
     {"_natPsoho_nat_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_nat_cte_times_vel_cpp, 5},
     {NULL, NULL, 0}

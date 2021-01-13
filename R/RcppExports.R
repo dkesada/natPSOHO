@@ -61,14 +61,15 @@ debug_cpp <- function() {
     .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho')
 }
 
-#' Substracts two Positions to obtain the Velocity that transforms one into the other
+#' Substracts two natPositions to obtain the natVelocity that transforms ps1 into ps2
 #' 
-#' @param cl the first position's causal list
-#' @param ps the second position's causal list
-#' @param vl the Velocity's causal list
-#' @return a list with the Velocity's causal list and the number of operations
-pos_minus_pos_cpp <- function(cl, ps, vl) {
-    .Call('_natPsoho_pos_minus_pos_cpp', PACKAGE = 'natPsoho', cl, ps, vl)
+#' @param ps1 the first position's causal list
+#' @param ps2 the second position's causal list
+#' @param vl the natVelocity's positive causal list
+#' @param vl_neg the natVelocity's negative causal list
+#' @return the velocity's causal lists by reference and the number of operations by return
+nat_pos_minus_pos_cpp <- function(ps1, ps2, vl, vl_neg) {
+    .Call('_natPsoho_nat_pos_minus_pos_cpp', PACKAGE = 'natPsoho', ps1, ps2, vl, vl_neg)
 }
 
 #' Adds two natVelocities 

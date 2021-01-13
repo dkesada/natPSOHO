@@ -16,7 +16,7 @@ natVelocity <- R6::R6Class("natVelocity",
       super$initialize(ordering)
       private$abs_op <- 0
       private$max_size <- max_size
-      private$cl_neg <- private$cl
+      private$cl_neg <- rep(0, length(private$cl))
     },
     
     get_cl_neg = function(){return(private$cl_neg)},
@@ -58,16 +58,14 @@ natVelocity <- R6::R6Class("natVelocity",
     },
     
     #' @description 
-    #' Given a position, returns the velocity that gets this position to the
-    #' other.
+    #' Given two positions, returns the velocity that gets the first position to the
+    #' other one.
     #' 
-    #' @param ps a Position object
-    #' return the Velocity that gets this position to the new one
+    #' @param ps1 the origin natPosition object
+    #' @param ps2 the objective natPosition object
+    #' @return the natVelocity that gets the ps1 to ps2
     subtract_positions = function(ps1, ps2){
-      res <- pos_minus_pos_cpp(ps1$get_cl(), ps2$get_cl(), private$cl)
-      
-      private$cl <- res[[1]]
-      private$abs_op <- res[[2]]
+      private$abs_op <- nat_pos_minus_pos_cpp(ps1$get_cl(), ps2$get_cl(), private$cl, private$cl_neg)
     },
     
     #' @description 
@@ -100,7 +98,7 @@ natVelocity <- R6::R6Class("natVelocity",
       
       if(k == 0){
         private$cl <- rep(0, length(private$cl))
-        private$cl_neg <- private$cl
+        private$cl_neg <- rep(0, length(private$cl))
         private$abs_op <- 0
       }
       

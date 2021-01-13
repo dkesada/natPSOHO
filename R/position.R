@@ -67,14 +67,14 @@ natPosition <- R6::R6Class("natPosition",
     },
     
     #' @description 
-    #' Given another position, returns the velocity that gets this position to the
-    #' other.
-    #' 
+    #' Given another position, returns the velocity that gets it to this
+    #' position.
+    #'  
     #' @param ps a natPosition object
-    #' return the natVelocity that gets this position to the new one
+    #' return the natVelocity that gets the other position to this one
     subtract_position = function(ps){
       res <- natVelocity$new(private$ordering, private$size)
-      res$subtract_positions(self, ps)
+      res$subtract_positions(ps, self)
       
       return(res)
     }

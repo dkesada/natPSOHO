@@ -1,42 +1,30 @@
 #include "include/velocity.h"
 
-//' Substracts two Positions to obtain the Velocity that transforms one into the other
+//' Substracts two natPositions to obtain the natVelocity that transforms ps1 into ps2
 //' 
-//' @param cl the first position's causal list
-//' @param ps the second position's causal list
-//' @param vl the Velocity's causal list
-//' @return a list with the Velocity's causal list and the number of operations
+//' @param ps1 the first position's causal list
+//' @param ps2 the second position's causal list
+//' @param vl the natVelocity's positive causal list
+//' @param vl_neg the natVelocity's negative causal list
+//' @return the velocity's causal lists by reference and the number of operations by return
 // [[Rcpp::export]]
-Rcpp::List pos_minus_pos_cpp(Rcpp::List &cl, Rcpp::List &ps, Rcpp::List &vl){
-  Rcpp::List slice_cl, slice_ps, slice_vl, cu_cl, cu_ps, cu_vl, pair_cl, pair_ps, pair_vl;
-  Rcpp::NumericVector dirs_cl, dirs_ps, dirs_vl;
+int nat_pos_minus_pos_cpp(const Rcpp::NumericVector &ps1, const Rcpp::NumericVector &ps2, Rcpp::NumericVector &vl, Rcpp::NumericVector &vl_neg){
+  int ps1_i, ps2_i, vl_i, vl_neg_i;
   int n_abs = 0;
-  Rcpp::List res (2);
   
-  for(int i = 0; i < cl.size(); i++){
-    slice_cl = cl[i];
-    slice_ps = ps[i];
-    slice_vl = vl[i];
+  for(int i = 0; i < ps1.size(); i++){
+    ps1_i = ps1[i];
+    ps2_i = ps2[i];
     
-    for(int j = 0; j < slice_cl.size(); j++){
-      pair_cl = slice_cl[j];
-      pair_ps = slice_ps[j];
-      pair_vl = slice_vl[j];
-      dirs_cl = pair_cl[1];
-      dirs_ps = pair_ps[1];
-      dirs_vl = subtract_dirs_vec(dirs_cl, dirs_ps, n_abs);
-      
-      pair_vl[1] = dirs_vl;
-      slice_vl[j] = pair_vl;
-    }
+    vl_i = bitwise_sub(ps2_i, ps1_i);
+    vl_neg_i = bitwise_sub(ps1_i, ps2_i);
     
-    vl[i] = slice_vl;
+    vl[i] = vl_i;
+    vl_neg[i] = vl_neg_i;
+    n_abs += bitcount(vl_i) + bitcount(vl_neg_i);
   }
   
-  res[0] = vl;
-  res[1] = n_abs;
-  
-  return res;
+  return n_abs;
 }
 
 //' Adds two natVelocities 
@@ -60,7 +48,7 @@ Rcpp::List pos_minus_pos_cpp(Rcpp::List &cl, Rcpp::List &ps, Rcpp::List &vl){
 //' @return the total number of resulting operations
 // [[Rcpp::export]]
 int nat_vel_plus_vel_cpp(Rcpp::NumericVector &vl1, Rcpp::NumericVector &vl1_neg,
-                          Rcpp::NumericVector &vl2, Rcpp::NumericVector &vl2_neg, 
+                          const Rcpp::NumericVector &vl2, const Rcpp::NumericVector &vl2_neg, 
                           int abs_op1, int abs_op2){
   int pos1, pos2, neg1, neg2, mask, res;
   

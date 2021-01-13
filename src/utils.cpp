@@ -91,117 +91,6 @@ int find_index(const Rcpp::StringVector &ordering, std::string node){
   return i;
 }
 
-// Add two directions whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first direction
-// @param d2 second direction
-// @param n_arcs the number of arcs present in the resulting causal list
-// @return the result of adding them
-int add_dirs(int d1, int d2, int &n_arcs){
-  int res = d1 + d2;
-  
-  if(res < 0)
-    res = 0;
-  else if(res > 1)
-    res = 1;
-  
-  if(res > d1)
-    n_arcs++;
-  else if(res < d1)
-    n_arcs--;
-  
-  return res;
-}
-
-// Add two directions vectors whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first NumericVector direction
-// @param d2 second NumericVector direction
-// @param n_arcs the number of arcs present in the resulting causal list
-// @return the result of adding them
-Rcpp::NumericVector add_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &n_arcs){
-  Rcpp::NumericVector res (d1.size());
-  
-  for(int i = 0; i < d1.size(); i++){
-    res[i] = add_dirs(d1[i], d2[i], n_arcs);
-  }
-  
-  return res;
-}
-
-// Subtract two directions whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first direction
-// @param d2 second direction
-// @param n_arcs the number of arcs operations present in the resulting Velocity
-// @return the result of subtracting them
-int subtract_dirs(int d1, int d2, int &n_abs){
-  int res = d1 - d2;
-  
-  if(d1 != d2)
-    n_abs++;
-  
-  return res;
-}
-
-// Subtract two directions vectors whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first NumericVector direction
-// @param d2 second NumericVector direction
-// @param n_arcs the number of arcs operations present in the resulting Velocity
-// @return the result of subtracting them
-Rcpp::NumericVector subtract_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &n_abs){
-  Rcpp::NumericVector res (d1.size());
-  
-  for(int i = 0; i < d1.size(); i++){
-    res[i] = subtract_dirs(d1[i], d2[i], n_abs);
-  }
-  
-  return res;
-}
-
-// Add two velocity directions whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first direction
-// @param d2 second direction
-// @param abs_op the number of {1,-1} operations present in the resulting Velocity
-// @return the result of adding them
-int add_vel_dirs(int d1, int d2, int &abs_op){
-  int res = d1 + d2;
-  
-  if(res < -1)
-    res = -1;
-  else if(res > 1)
-    res = 1;
-  
-  if(res > d1 && res == 1)
-    abs_op++;
-  else if(res > d1 && res == 0)
-    abs_op--;
-  else if(res < d1 && res == 0)
-    abs_op--;
-  else if(res < d1 && res == -1)
-    abs_op++;
-  
-  return res;
-}
-
-// Subtract two directions vectors whose value has to be in the set {-1,0,1}
-// 
-// @param d1 first NumericVector direction
-// @param d2 second NumericVector direction
-// @param abs_op the number of {1,-1} operations present in the resulting Velocity
-// @return the result of adding them
-Rcpp::NumericVector add_vel_dirs_vec(const NumericVector &d1, const NumericVector &d2, int &abs_op){
-  Rcpp::NumericVector res (d1.size());
-  
-  for(int i = 0; i < d1.size(); i++){
-    res[i] = add_vel_dirs(d1[i], d2[i], abs_op);
-  }
-  
-  return res;
-}
-
 // Find the positions that are available to operate in a velocity
 // 
 // When adding or removing arcs via cte * vel, this finds positions where
@@ -261,14 +150,17 @@ Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int){
   return res;
 }
 
-// Bitwise operator to remove 1s in the position when a 1 is in that same bit
-// in the velocity. The truth table is:
-//        vel
-//        0 1
-//  pos 0 0 0
-//      1 1 0
-int bitwise_sub_vel(int pos, int vel){
-  return pos & (~vel);
+// Binary bitwise operator that returns 1 only when the first bit is 1 and the
+// second one is 0. Kinda like subtracting 1 bit only when there is a 1 in the 
+// other bit. It helps removing 1s in the position when a 1 is in that same bit
+// in the velocity, or finding the velocity that takes you from a position to another.
+// The truth table is:
+//        x2
+//       0 1
+//  x1 0 0 0
+//     1 1 0
+int bitwise_sub(int x1, int x2){
+  return x1 & (~x2);
 }
 
 // Just a debug function to try out stuff

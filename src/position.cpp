@@ -73,7 +73,7 @@ int nat_pos_plus_vel_cpp(Rcpp::NumericVector &cl, const Rcpp::NumericVector &vl,
     vl_i = vl[i];
     vl_neg_i = vl_neg[i];
     new_pos = pos | vl_i;
-    new_pos = bitwise_sub_vel(new_pos, vl_neg_i);
+    new_pos = bitwise_sub(new_pos, vl_neg_i);
     n_prev = bitcount(pos);
     n_post = bitcount(new_pos);
     

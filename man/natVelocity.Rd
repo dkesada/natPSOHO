@@ -12,8 +12,9 @@
 
 \item{p}{the parameter of the geometric distribution}
 
-\item{ps}{a Position object
-return the Velocity that gets this position to the new one}
+\item{ps1}{the origin natPosition object}
+
+\item{ps2}{the objective natPosition object}
 
 \item{vl}{a Velocity object}
 
@@ -21,6 +22,8 @@ return the Velocity that gets this position to the new one}
 }
 \value{
 A new 'natVelocity' object
+
+the natVelocity that gets the ps1 to ps2
 }
 \description{
 Constructor of the 'natVelocity' class. Only difference with the
@@ -37,8 +40,8 @@ package.
 
 Randomizes the Velocity's directions.
 
-Given a position, returns the velocity that gets this position to the
-other.
+Given two positions, returns the velocity that gets the first position to the
+other one.
 
 Add both velocities directions
 
