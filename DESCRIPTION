@@ -1,15 +1,15 @@
 Package: natPsoho
 Type: Package
-Title: Particle Swarm Optimization Higher-Order Dynamic Bayesian Network Structure Learning
-Version: 0.1.2
+Title: Natural encoding Particle Swarm Optimization Higher-Order Dynamic Bayesian Network Structure Learning
+Version: 0.2.0
 Date: 2020-07-01
 Author: David Quesada
 Maintainer: David Quesada <dkesada@gmail.com>
 Description: This package implements an extension of the the particle swarm 
   optimization structure learning algorithm for higher-order dynamic Bayesian 
   networks from Santos and Maciel <doi:10.1109/BRC.2014.6880957>. In this case,
-  the vectors are natural instead of binary, and it learns the appropriate 
-  Markovian order too.
+  we use natural number vectors instead of binary, and it learns the appropriate 
+  Markovian on its own.
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0)
 Imports: Rcpp (>= 1.0.4),

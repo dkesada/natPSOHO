@@ -6,6 +6,8 @@
 \arguments{
 \item{ordering}{a vector with the names of the nodes in t_0}
 
+\item{max_size}{maximum number of timeslices of the DBN}
+
 \item{n}{the new number of operations that the velocity performs}
 
 \item{probs}{the weight of each value {-1,0,1}. They define the probability that each of them will be picked}

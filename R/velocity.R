@@ -11,6 +11,7 @@ natVelocity <- R6::R6Class("natVelocity",
     #' Constructor of the 'natVelocity' class. Only difference with the
     #' natCauslist one is that it has a negative cl attribute.
     #' @param ordering a vector with the names of the nodes in t_0
+    #' @param max_size maximum number of timeslices of the DBN
     #' @return A new 'natVelocity' object
     initialize = function(ordering, max_size){
       super$initialize(ordering)

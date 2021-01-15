@@ -25,7 +25,7 @@ learn_dbn_structure_pso <- function(dt, max_size, n_inds = 50, n_it = 50,
   #initial_size_check(size) --ICO-Merge
   #initial_df_check(dt) --ICO-Merge
   
-  ordering <- names(dt)
+  ordering <- grep("_t_0", names(dt), value = TRUE) 
   ctrl <- natPsoCtrl$new(ordering, max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
                       v_probs, p, r_probs)
   ctrl$run(dt)
