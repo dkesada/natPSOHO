@@ -4,12 +4,19 @@
 using namespace Rcpp;
 #endif
 
-#ifndef natutils_op
-#define natutils_op
+#ifndef nat_utils_op
+#define nat_utils_op
 
 #include <regex>
 #include <random>
 #include <vector>
+
+static const std::vector<unsigned int> MASKS = { // --ICO-Merge: delete
+  0x1,
+  0x3,
+  0xF,
+  0xFF,
+  0xFFFF};
 
 int one_hot_cpp(int nat);
 int bitcount(unsigned x);
@@ -20,5 +27,8 @@ std::vector<int> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::
 Rcpp::NumericVector find_open_bits(int x, bool remove, int max_int);
 int bitwise_sub(int x1, int x2);
 Rcpp::List init_list_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p);
-Rcpp::List debug_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p);
+std::vector<int> find_open_bits_log(int x, bool remove, int max_int); // --ICO-Merge: delete
+std::vector<int> find_open_bits_log_rec(int x, int idx, int depth); // --ICO-Merge: delete
+int debug_cpp(int x, bool op, bool remove, int max_int);
+
 #endif

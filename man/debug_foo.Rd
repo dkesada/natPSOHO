@@ -4,7 +4,7 @@
 \alias{debug_foo}
 \title{Just a debug function to try out rcpp stuff}
 \usage{
-debug_foo()
+debug_foo(x)
 }
 \value{
 whatever you want to return in the testing

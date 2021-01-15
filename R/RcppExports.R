@@ -61,8 +61,8 @@ init_list_cpp <- function(ordering, max_size, n_inds, v_probs, p) {
     .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', ordering, max_size, n_inds, v_probs, p)
 }
 
-debug_cpp <- function(ordering, max_size, n_inds, v_probs, p) {
-    .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho', ordering, max_size, n_inds, v_probs, p)
+debug_cpp <- function(x, op, remove, max_int) {
+    .Call('_natPsoho_debug_cpp', PACKAGE = 'natPsoho', x, op, remove, max_int)
 }
 
 #' Substracts two natPositions to obtain the natVelocity that transforms ps1 into ps2

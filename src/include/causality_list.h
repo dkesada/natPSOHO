@@ -6,7 +6,7 @@ using namespace Rcpp;
 
 #include "utils.h"
 
-#ifndef natcl_op
-#define natcl_op
+#ifndef nat_cl_op
+#define nat_cl_op
 void insert_node_natcl(Rcpp::NumericVector &cl, const StringVector &ordering, std::string node, unsigned int i);
 #endif

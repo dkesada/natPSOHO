@@ -40,25 +40,19 @@ learn_dbn_structure_pso <- function(dt, max_size, n_inds = 50, n_it = 50,
 #' Results: equivalent times, O(n) as it should be. Will leave the R initialization.
 #' @return whatever you want to return in the testing
 #' @export
-debug_foo <- function(){
-  ordering <- c("A_t_0", "B_t_0", "C_t_0", "D_t_0", "E_t_0")
-  max_size <- 6
-  n_inds <- 1000
-  v_probs <- c(10, 65, 25)
-  p <- 0.06
-  
+debug_foo <- function(x){
+  max_int <- 2^5 - 1 
+  remove <- T
   t <- Sys.time()
-  
-  parts <- vector(mode = "list", length = n_inds)
-  for(i in 1:n_inds)
-    parts[[i]] <- natParticle$new(ordering, max_size, v_probs, p)
-  
-  print("Time elapsed for the initialization in R: ")
+  for(i in 1:1000)
+    invisible(debug_cpp(x, T, remove, max_int))
+  print("Time elapsed for the trivial algorithm: ")
   print(Sys.time() - t)
   
   t <- Sys.time()
-  res <- debug_cpp(ordering, max_size, n_inds, v_probs, p)
-  print("Time elapsed for the initialization in C++: ")
+  for(i in 1:1000)
+    invisible(debug_cpp(x, F, remove, max_int))
+  print("Time elapsed for the recursive algorithm: ")
   print(Sys.time() - t)
   
   return(0)

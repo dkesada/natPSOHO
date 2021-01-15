@@ -125,8 +125,10 @@ std::vector<int> find_open_positions(const Rcpp::NumericVector &cl, const Rcpp::
 // 
 // This can also be done recursively by masking, but in most cases the size
 // of the network shouldn't exceed size 8 or so, which means only 8 iterations
-// at worst. By using divide and conquer, I could get there in O(log(n)), but
-// it would be more of a hassle than an improvement on the average case.
+// at worst. By using divide and conquer, I could get there in O(log(n)). The
+// implementation I did is slower than this, probably because of appending
+// the vectors of results in the recursion and because it ends up doing more
+// operations by masking and shifting.
 //
 // @param x the integer to process
 // @param remove if true, will search for bits set to 1. Will search for 0s otherwise.
@@ -190,10 +192,64 @@ Rcpp::List init_list_cpp(const Rcpp::StringVector &ordering, int max_size, int n
   return res;
 }
 
-// Just a debug function to try out stuff
-// [[Rcpp::export]]
-Rcpp::List debug_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p){
-  Rcpp::List res = init_list_cpp(ordering, max_size, n_inds, v_probs, p);
+// Find the bits that are set to 0 or 1 in an integer using divide and conquer
+// 
+// Recursive algorithm that finds the position of 1s or 0s by masking and 
+// shifting bits. In most cases, it has a O(log(n)) cost, in the worst case 
+// scenario of 0xFFFFFFFF, it has O(n) cost. Cool idea in theory, but it ends
+// up being slower than the trivial way. Too many vectors appended, probably.
+// --ICO-Merge: worse than the trivial approach. Delete 
+//
+// @param x the integer to process
+// @param remove if true, will search for bits set to 1. Will search for 0s otherwise.
+// @param max_int the maximum integer allowed, i.e., the one with all possible bits set to 1
+// @return a NumericVector with the open bits
+std::vector<int> find_open_bits_log(int x, bool remove, int max_int){
+  if(!remove)
+    x ^= max_int;
+  return find_open_bits_log_rec(x, 1, 4);
+}
+
+// Recursive part of the algorithm that finds the position of 1s or 0s. Given a 
+// number, if 
+//
+// --ICO-Merge: delete
+// @param x the integer to process
+// @param remove if true, will search for bits set to 1. Will search for 0s otherwise.
+// @param max_int the maximum integer allowed, i.e., the one with all possible bits set to 1
+// @return a NumericVector with the open bits
+std::vector<int> find_open_bits_log_rec(int x, int idx, int depth){
+  std::vector<int> res;
+  
+  if(x == 1)
+    res.push_back(idx);
+  
+  else if (x > 1){
+    int x1, x2, shift;
+    shift = 1 << depth;
+    x1 = x & MASKS[depth];
+    x2 = x >> shift;
+    
+    res = find_open_bits_log_rec(x1, idx, depth-1);
+    std::vector<int> res2 = find_open_bits_log_rec(x2, idx + shift, depth-1);
+    if(res.size() > res2.size())
+      res.insert(res.end(), res2.begin(), res2.end());
+    else{
+      res2.insert(res2.end(), res.begin(), res.end());
+      res = res2;
+    }
+  }
   
   return res;
+}
+
+// Just a debug function to try out stuff
+// [[Rcpp::export]]
+int debug_cpp(int x, bool op, bool remove, int max_int){
+  if(op)
+    find_open_bits(x, remove, max_int);
+  else
+    find_open_bits_log(x, remove, max_int);
+  
+  return 0;
 }

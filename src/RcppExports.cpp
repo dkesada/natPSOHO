@@ -83,17 +83,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // debug_cpp
-Rcpp::List debug_cpp(const Rcpp::StringVector& ordering, int max_size, int n_inds, const Rcpp::NumericVector& v_probs, float p);
-RcppExport SEXP _natPsoho_debug_cpp(SEXP orderingSEXP, SEXP max_sizeSEXP, SEXP n_indsSEXP, SEXP v_probsSEXP, SEXP pSEXP) {
+int debug_cpp(int x, bool op, bool remove, int max_int);
+RcppExport SEXP _natPsoho_debug_cpp(SEXP xSEXP, SEXP opSEXP, SEXP removeSEXP, SEXP max_intSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering(orderingSEXP);
-    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type n_inds(n_indsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type v_probs(v_probsSEXP);
-    Rcpp::traits::input_parameter< float >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(debug_cpp(ordering, max_size, n_inds, v_probs, p));
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< bool >::type op(opSEXP);
+    Rcpp::traits::input_parameter< bool >::type remove(removeSEXP);
+    Rcpp::traits::input_parameter< int >::type max_int(max_intSEXP);
+    rcpp_result_gen = Rcpp::wrap(debug_cpp(x, op, remove, max_int));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -150,7 +149,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_bitcount", (DL_FUNC) &_natPsoho_bitcount, 1},
     {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 5},
-    {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 5},
+    {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 4},
     {"_natPsoho_nat_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_nat_pos_minus_pos_cpp, 4},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},
     {"_natPsoho_nat_cte_times_vel_cpp", (DL_FUNC) &_natPsoho_nat_cte_times_vel_cpp, 5},
