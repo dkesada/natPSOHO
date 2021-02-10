@@ -4,10 +4,10 @@
 \alias{bn_translate_exp}
 \title{Experimental function that translates a natPosition vector into a DBN network.}
 \usage{
-bn_translate_exp(cl, ordering_raw, n_arcs, nodes)
+bn_translate_exp(ps, ordering_raw, n_arcs, nodes)
 }
 \arguments{
-\item{cl}{a position vector of natural numbers}
+\item{ps}{a position vector of natural numbers}
 
 \item{ordering_raw}{the ordering of the variables}
 

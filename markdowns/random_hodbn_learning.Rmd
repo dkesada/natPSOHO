@@ -15,10 +15,18 @@ In this rmarkdown, we will make some experiments to test the capabilities of the
 
 * Keep the same parameters in all runs, the only thing that will change is the original structures and the datasets used. This will allow us to see the effects of increasing both $m$ and $k$ progressively
 
+To be able to replicate this experiments, the following chunk of code has to be executed in order to get the experimental version of the package up and working:
+
+```{r install_github, eval = FALSE, echo = TRUE}
+library(devtools)
+devtools::install_github("dkesada/natPSOHO")
+```
+
+The functions with the suffix '_exp' will be deleted in the final version of the package, and so some of the utils functions used in the experiments will be missing.
 
 ### Network and dataset generation
 
-To generate the random network structures, we will sample a random natPosition where each natural number is sampled from a uniform distribution in the interval $[0, 2^m-1]$. This position will be translated to a BN and a dataset will be sampled from it.
+To generate the random network structures, we will sample a random 'natPosition' where each natural number is sampled from a uniform distribution in the interval $[0, 2^m-1]$. This position will be translated to a BN and a dataset will be sampled from it.
 
 
 ```{r init}
@@ -28,10 +36,19 @@ library(data.table)
 ```
 
 ```{r generation}
-ordering <- c("A", "B", "C", "D", "E")
+n_vars <- 3
 size <- 3
+seed <- 42
+min_mu <- -10
+max_mu <- 10
+min_sd <- 0.1
+max_sd <- 5
+min_coef <- -3
+max_coef <- 3
 
-set.seed(42)
+# Generates a DBN structure and the sampled dataset
+res <- generate_random_network_exp(n_vars, size, min_mu, max_mu, min_sd,
+                                   max_sd, min_coef, max_coef, seed)
 
 struct <- bnlearn::model2network("[A_t_2][B_t_2][C_t_2][D_t_2][E_t_2][A_t_1][B_t_1][C_t_1][D_t_1][E_t_1][A_t_0|C_t_2:B_t_1][B_t_0|C_t_2:E_t_2:A_t_1][C_t_0|B_t_1:C_t_1][D_t_0|A_t_2:D_t_1][E_t_0|D_t_2:A_t_1:C_t_1:D_t_1]")
 
