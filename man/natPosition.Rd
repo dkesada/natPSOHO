@@ -2,7 +2,7 @@
 % Please edit documentation in R/position.R
 \name{natPosition}
 \alias{natPosition}
-\title{R6 class that defines DBNs as causality lists}
+\title{R6 class that defines DBNs as vectors of natural numbers}
 \arguments{
 \item{nodes}{A list with the names of the nodes in t_0 in the network
 If its not null, a random position will be generated for those nodes.}
@@ -28,8 +28,6 @@ a dbn object
 
 the ordering of the nodes in t_0
 
-a causlist object
-
 a random position
 
 the number of arcs
@@ -37,9 +35,9 @@ the number of arcs
 \description{
 Constructor of the 'natPosition' class
 
-Translate the causality list into a DBN network
+Translate the vector into a DBN network
 
-Uses this object private causality list and transforms it into a DBN.
+Uses this object private cl and transforms it into a DBN.
 
 Add a velocity to the position
 
@@ -52,13 +50,14 @@ Return the static node ordering
 
 This function takes as input a dbn and return the node ordering of the
 variables inside a timeslice. This ordering is needed to understand a
-causal list.
+position vector.
 
-Translate a DBN into a causality list
+Translate a DBN into a position vector
 
 This function takes as input a network from a DBN and transforms the 
-structure into a causality list if it is a valid DBN. Valid DBNs have only
-inter-timeslice edges and only allow variables in t_0 to have parents.
+structure into a vector of natural numbers if it is a valid DBN. Valid 
+DBNs have only inter-timeslice edges and only allow variables in t_0 to 
+have parents.
 
 Generates a random position
 
@@ -71,8 +70,9 @@ lists of lists and random bn generation into translation.
 Recount the number of arcs in the cl
 }
 \details{
-A causality list has a list with causal units, a size representing the
-Markovian order of the network and a specific node ordering.
+A natPosition represents a single HO-DBN structure with a vector. Its function
+is to encode the solutions in the PSO framework. Each particle will have a 
+position.
 }
 \section{Fields}{
 

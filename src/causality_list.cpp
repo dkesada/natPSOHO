@@ -1,7 +1,6 @@
 #include "include/causality_list.h"
 
-// Insert a node in the correspondent causal unit. Keeps record of inserted
-// elements in each causal unit
+// Insert an arc in the correspondent temporal family. 
 // 
 // @param cl a causality list
 // @param ordering a list with the order of the variables in t_0

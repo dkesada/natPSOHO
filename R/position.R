@@ -1,7 +1,8 @@
-#' R6 class that defines DBNs as causality lists
+#' R6 class that defines DBNs as vectors of natural numbers
 #' 
-#' A causality list has a list with causal units, a size representing the
-#' Markovian order of the network and a specific node ordering.
+#' A natPosition represents a single HO-DBN structure with a vector. Its function
+#' is to encode the solutions in the PSO framework. Each particle will have a 
+#' position.
 natPosition <- R6::R6Class("natPosition", 
   inherit = natCauslist,
   public = list(
@@ -44,9 +45,9 @@ natPosition <- R6::R6Class("natPosition",
     get_n_arcs = function(){return(private$n_arcs)},
     
     #' @description 
-    #' Translate the causality list into a DBN network
+    #' Translate the vector into a DBN network
     #' 
-    #' Uses this object private causality list and transforms it into a DBN.
+    #' Uses this object private cl and transforms it into a DBN.
     #' @return a dbn object
     bn_translate = function(){
       arc_mat <- cl_to_arc_matrix_cpp(private$cl, private$ordering_raw, private$n_arcs)
@@ -95,7 +96,7 @@ natPosition <- R6::R6Class("natPosition",
     #' 
     #' This function takes as input a dbn and return the node ordering of the
     #' variables inside a timeslice. This ordering is needed to understand a
-    #' causal list.
+    #' position vector.
     #' @param net a dbn or dbn.fit object
     #' @return the ordering of the nodes in t_0
     dbn_ordering = function(net){
@@ -103,13 +104,13 @@ natPosition <- R6::R6Class("natPosition",
     },
     
     #' @description 
-    #' Translate a DBN into a causality list
+    #' Translate a DBN into a position vector
     #' 
     #' This function takes as input a network from a DBN and transforms the 
-    #' structure into a causality list if it is a valid DBN. Valid DBNs have only
-    #' inter-timeslice edges and only allow variables in t_0 to have parents.
+    #' structure into a vector of natural numbers if it is a valid DBN. Valid 
+    #' DBNs have only inter-timeslice edges and only allow variables in t_0 to 
+    #' have parents.
     #' @param net a dbn object
-    #' @return a causlist object
     cl_translate = function(net){
       private$cl <- create_natcauslist_cpp(private$cl, net$nodes, private$ordering)
     },

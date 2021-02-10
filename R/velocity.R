@@ -1,9 +1,9 @@
-#' R6 class that defines velocities affecting causality lists in the PSO
+#' R6 class that defines velocities in the PSO
 #' 
-#' The velocities will be defined as a causality list where each element in
-#' a causal unit is a pair (v, node) with v being either 0, 1 or -1. 0 means 
-#' that arc remained the same, 1 means that arc was added and -1 means that arc 
-#' was deleted.
+#' The velocities will be defined as two natural vectors where each element in
+#' them represents the arcs from a temporal family of nodes to a receiving
+#' node. 1-bits in the binary representation of this number represent arc 
+#' additions/deletions 
 natVelocity <- R6::R6Class("natVelocity",
   inherit = natCauslist,
   public = list(
