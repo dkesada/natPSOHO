@@ -16,7 +16,9 @@ Imports: Rcpp (>= 1.0.4),
   bnlearn (>= 4.5),
   dbnR (>= 0.5.3),
   R6 (>= 2.4.1),
-  utils (>= 3.5.0)
+  utils (>= 3.5.0),
+  stats (>= 3.5.0),
+  data.table (>= 1.13.6)
 LinkingTo: Rcpp
 Encoding: UTF-8
 RoxygenNote: 7.1.1

@@ -117,12 +117,12 @@ generate_random_network_exp <- function(n_vars, size, min_mu, max_mu,
   # Second, we generate a dataset that represents the same relationships portrayed by the network
   dt <- as.data.table(matrix(nrow = 10000, ncol = length(nodes_l$nodes)))
   names(dt) <- nodes_l$nodes
-  dt[, names(dt) := lapply(.SD, function(x){rnorm(length(x),
+  dt[, names(dt) := lapply(.SD, function(x){stats::rnorm(length(x),
                                                   runif(1, min_mu, max_mu), 
                                                   runif(1, min_sd, max_sd))})]
   
   # Apply the effects of the arcs in the dataset
-  bn_arcs <- arcs(res$net)
+  bn_arcs <- bnlearn::arcs(res$net)
   for(i in 1:n_arcs){
     from <- bn_arcs[i,1]
     to <- bn_arcs[i,2]
