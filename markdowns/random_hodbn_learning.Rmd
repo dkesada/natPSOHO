@@ -38,7 +38,7 @@ library(data.table)
 
 ```{r generation}
 n_vars <- 3
-size <- 2
+size <- 3
 seed <- 42
 min_mu <- -10
 max_mu <- 10
@@ -55,85 +55,102 @@ bnlearn::score(og$net, og$f_dt, type = "bge")
 
 ```
 
-The metric that both 'psoho' algorithms use to evaluate structures is the bayesian Gaussian equivalent score (bge) implemented in 'bnlearn'. A network representing the real structure that generated the data obtains a bge score of -238k, while randomly generated networks get bge values around the -27k mark.
+The metric that both 'psoho' algorithms use to evaluate structures is the bayesian Gaussian equivalent score (bge) implemented in *bnlearn*. A size 3 network with 3 variables in t_0 representing the real structure that generated the data obtains a bge score of -238k, while randomly generated networks get bge values around the -27k mark.
 
 ```{r natPsoho}
 
-eval_sol <- function(real, sol){
+eval_sol <- function(real, sol, port = NULL){
   real_arcs <- apply(real$arcs, 1, function(x){paste0(x[1], x[2])})
   sol_arcs <- apply(sol$arcs, 1, function(x){paste0(x[1], x[2])})
-
-  print(paste0("Number of real arcs: ", length(real_arcs)))
-  print(paste0("Number of real arcs in solution: ", sum(real_arcs %in% sol_arcs)))
-  print(paste0("Total number of arcs in solution: ", length(sol_arcs)))
+  
+  if(is.null(port)){
+    cat(paste0("Number of real arcs: ", length(real_arcs)))
+    cat(paste0("Number of real arcs in solution: ", sum(real_arcs %in% sol_arcs)))
+    cat(paste0("Total number of arcs in solution: ", length(sol_arcs)))
+  }
+  
+  else{
+    writeLines(paste0("Number of real arcs: ", length(real_arcs)), port)
+    writeLines(paste0("Number of real arcs in solution: ", sum(real_arcs %in% sol_arcs)), port)
+    writeLines(paste0("Total number of arcs in solution: ", length(sol_arcs)), port)
+  }
 }
 
 a <- Sys.time()
-#res <- natPsoho::learn_dbn_structure_pso(og$f_dt, size, n_inds = 300, n_it = 50,
-#                                      in_cte = 0.7, gb_cte = 0.5, lb_cte = 0.5,
-#                                      v_probs = c(10, 65, 25), p = 0.2, r_probs = c(-0.5, 1.5))
-res <- dbnR::learn_dbn_struc(NULL, size = size, f_dt = og$f_dt, intra = F)
-class(res) <- "bn"
+res <- natPsoho::learn_dbn_structure_pso(og$f_dt, size, n_inds = 300, n_it = 50,
+                                     in_cte = 0.7, gb_cte = 0.5, lb_cte = 0.5,
+                                     v_probs = c(10, 65, 25), p = 0.2, r_probs = c(-0.5, 1.5))
+# res <- dbnR::learn_dbn_struc(NULL, size = size, f_dt = og$f_dt, intra = F)
+# class(res) <- "bn"
 eval_sol(og$net, res)
 print(Sys.time() - a)
 print(bnlearn::score(res, og$f_dt, type = "bge"))
 ```
+When the number of variables and the size is low, we can expect to find the real structure that generated the data, but as those parameters increase the search space gets immensely huge, and the global optimum is hard to achieve with low particle count and few iterations.
 
-Getting the learned network to have only exactly the real arcs is very difficult because a network with only the 13 correct arcs has a fitness of -237911.3 and one with those 13 arcs and 7 additional ones has a fitness of -237951. Overall, those additional false positives are not too aggravating and don't create a dense network, given that this network can have a maximum of 50 arcs. 
+The previous chunk shows the execution of the natPSOHO algorithm in one network. We will now automate the process of generating a network for some size and number of variables, executing all 3 algorithms and printing the results into a log file.
 
-With the strong constraints imposed to intra and inter-slice arcs, a network resulting from this learning algorithm can have $(s-1) * n^2$ maximum arcs, with $s$ being the size of the network and $n$ being the number of nodes. This means that the number of possible arcs scales cuadratically with the number of nodes and linearly with the size of the network as a result of only allowing arcs to t_0.
-
-Next, we will compare the results of both algorithms with the same sampled data and the same parameters:
+Next, we will compare the results of all algorithms with the same sampled data and the same parameters. The next chunk performs all the experiments and generates a file "results_log.txt" with the metrics. Beware that it takes a really long time to perform all the experiments.
 
 ```{r time_trial}
 
-a <- Sys.time()
-res <- natPsoho::learn_dbn_structure_pso(dt, size, n_inds = 200, n_it = 10,
-                                      in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
-                                      v_probs = c(10, 65, 25), p = 0.06, r_probs = c(-0.5, 1.5))
-eval_sol(struct, res)
-print("Elapsed time for the natPsoho algorithm:")
-print(Sys.time() - a)
-print("Final best score obtained:")
-print(bnlearn::score(res, dt, type = "bge"))
+evaluate_network <- function(og, size, n_vars, port){
+  writeLines("------------------------------------------------------------ \n", port)
+  writeLines(paste0("Session with size ", size, " and ", n_vars, " variables in t_0: \n \n"), port)
+  
+  # natPSOHO
+  writeLines(paste0("Results for the natPSOHO algorithm: \n"), port)
+  a <- Sys.time()
+  res <- natPsoho::learn_dbn_structure_pso(og$f_dt, size, n_inds = 300, n_it = 50,
+                                       in_cte = 0.7, gb_cte = 0.5, lb_cte = 0.5,
+                                       v_probs = c(10, 65, 25), p = 0.2, r_probs = c(-0.5, 1.5))
+  writeLines(paste0("Elapsed time: ", format(Sys.time() - a)), port)
+  eval_sol(og$net, res, port)
+  class(res) <- "bn"
+  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bge"))), port)
+  writeLines("\n", port)
+  
+  # PSOHO
+  writeLines(paste0("Results for the PSOHO algorithm: \n"), port)
+  a <- Sys.time()
+  res <- dbnR::learn_dbn_struc(NULL, size, method = "psoho", f_dt = og$f_dt, n_inds = 200, n_it = 50,
+                                       in_cte = 0.7, gb_cte = 0.5, lb_cte = 0.5,
+                                       v_probs = c(10, 65, 25),  r_probs = c(-0.5, 1.5))
+  writeLines(paste0("Elapsed time: ", format(Sys.time() - a)), port)
+  eval_sol(og$net, res, port)
+  class(res) <- "bn"
+  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bge"))), port)
+  writeLines("\n", port)
+  
+   # DMMHC
+  writeLines(paste0("Results for the DMMHC algorithm: \n"), port)
+  a <- Sys.time()
+  res <- dbnR::learn_dbn_struc(NULL, size, method = "dmmhc", f_dt = og$f_dt, intra = FALSE)
+  writeLines(paste0("Elapsed time: ", format(Sys.time() - a)), port)
+  eval_sol(og$net, res, port)
+  class(res) <- "bn"
+  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bge"))), port)
+  writeLines("\n", port)
+  
+}
 
-a <- Sys.time()
-res <- dbnR::learn_dbn_struc(dt, size, method = "psoho", f_dt = dt, n_inds = 200, n_it = 10,
-                                      in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
-                                      v_probs = c(10, 65, 25), r_probs = c(-0.5, 1.5))
-eval_sol(struct, res)
-print("Elapsed time for the binary psoho algorithm:")
-print(Sys.time() - a)
-print("Final best score obtained:")
-class(res) <- "bn"
-print(bnlearn::score(res, dt, type = "bge"))
+max_size <- 8
+max_n_vars <- 20
+set.seed(42)
+port <- file("./results_log.txt", open = "w")
+
+for(size in 2:max_size){
+  for(n_vars in 2:max_n_vars){
+    og <- generate_random_network_exp(n_vars, size, min_mu, max_mu, min_sd,
+                                      max_sd, min_coef, max_coef)
+    evaluate_network(og, size, n_vars, port)
+  }
+}
+
+close(port)
+
 ```
 
 Both resulting networks scores are very similar, and the execution time of the 'natPsoho' algorithm is substancially lower. The same solutions can be obtained in both algorithms, and the 'natPsoho' one allows for the discovery of higher order networks on less time.
 
-### Comparison in times between psoho and natPsoho
 
-Now, we will test how well the algorithm scales when dealing with higher orders. To test it, we will train several networks for the 'motor' sample dataset in the 'dbnR' package varying the size. There are 11 variables per time-slice and 3000 instances in the dataset, and the tests will be performed with a particle population of 200 individuals and 10 iterations in total.
-
-```{r bigger size}
-
-dt <- dbnR::motor
-size <- 8
-dt <- dbnR::fold_dt(dt, size)
-
-a <- Sys.time()
-res <- natPsoho::learn_dbn_structure_pso(dt, size, n_inds = 200, n_it = 10,
-                                      in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
-                                      v_probs = c(10, 65, 25), p = 0.06, r_probs = c(-0.5, 1.5))
-print("Elapsed time for the natPsoho algorithm:")
-print(Sys.time() - a)
-
-a <- Sys.time()
-res <- dbnR::learn_dbn_struc(dt, size, method = "psoho", f_dt = dt, n_inds = 200, n_it = 10,
-                                      in_cte = 0.8, gb_cte = 0.5, lb_cte = 0.5,
-                                      v_probs = c(10, 65, 25), r_probs = c(-0.5, 1.5))
-print("Elapsed time for the psoho algorithm:")
-print(Sys.time() - a)
-```
-
-The time difference is quite noticeable for higher orders. Given that the data structure of the 'natPsoho' algorithm remains constant in size, the initialization is done always in the same time as opposed to the original 'psoho' algorithm. Bitwise operations over integer numbers are also faster than operating through lists of positive/negative 1s and 0s, and the only operation whose cost increases with the size is finding the open positions in an integer. If I could make an algorithm that computes this in constant time, like in the case of the bitcount of integers, the algorithm would be unaffected by the maximum size. 
