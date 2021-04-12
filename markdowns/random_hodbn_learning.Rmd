@@ -115,7 +115,7 @@ evaluate_network <- function(og, size, n_vars, port){
   writeLines(paste0("Elapsed time: ", a), port)
   eval_sol(og$net, res, port)
   class(res) <- "bn"
-  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bic-g"))), port)
+  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bge"))), port)
   writeLines("\n", port)
 
   # PSOHO
@@ -123,12 +123,12 @@ evaluate_network <- function(og, size, n_vars, port){
   b <- Sys.time()
   res <- dbnR::learn_dbn_struc(NULL, size, method = "psoho", f_dt = og$f_dt, n_inds = 300, n_it = 50,
                                        in_cte = 0.7, gb_cte = 0.5, lb_cte = 0.5,
-                                       v_probs = c(10, 65, 25),  r_probs = c(-0.5, 1.5), score = "bic-g")
+                                       v_probs = c(10, 65, 25),  r_probs = c(-0.5, 1.5), score = "bge")
   b <- format(Sys.time() - b)
   writeLines(paste0("Elapsed time: ", b), port)
   eval_sol(og$net, res, port)
   class(res) <- "bn"
-  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bic-g"))), port)
+  writeLines(paste0("Final best score obtained:", format(bnlearn::score(res, og$f_dt, type = "bge"))), port)
   writeLines("\n", port)
   
   # DMMHC
