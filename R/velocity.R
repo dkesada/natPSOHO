@@ -11,13 +11,14 @@ natVelocity <- R6::R6Class("natVelocity",
     #' Constructor of the 'natVelocity' class. Only difference with the
     #' natCauslist one is that it has a negative cl attribute.
     #' @param ordering a vector with the names of the nodes in t_0
+    #' @param ordering_raw a vector with the names of the nodes without the appended "_t_0"
     #' @param max_size maximum number of timeslices of the DBN
     #' @return A new 'natVelocity' object
-    initialize = function(ordering, max_size){
-      super$initialize(ordering)
+    initialize = function(ordering, ordering_raw, max_size){
+      super$initialize(ordering, ordering_raw)
       private$abs_op <- 0
       private$max_size <- max_size
-      private$cl_neg <- rep(0, length(private$cl))
+      private$cl_neg <- init_cl_cpp(length(private$cl))
     },
     
     get_cl_neg = function(){return(private$cl_neg)},
@@ -48,11 +49,17 @@ natVelocity <- R6::R6Class("natVelocity",
       for(i in 1:length(private$cl)){
         op <- rmultinom(n = 1, size = 1, prob = probs)
         if(op[3] == 1){
-          private$cl[i] <- trunc_geom(p, 2^(private$max_size - 1))
+          if(p <= 0)
+            private$cl[i] <- floor(runif(1, 0, 2^(private$max_size - 1)))
+          else
+            private$cl[i] <- trunc_geom(p, 2^(private$max_size - 1))
           private$abs_op <- private$abs_op + bitcount(private$cl[i])
         }
         else if (op[1] == 1){
-          private$cl_neg[i] <- trunc_geom(p, 2^(private$max_size - 1))
+          if(p <= 0)
+            private$cl_neg[i] <- floor(runif(1, 0, 2^(private$max_size - 1)))
+          else
+            private$cl_neg[i] <- trunc_geom(p, 2^(private$max_size - 1))
           private$abs_op <- private$abs_op + bitcount(private$cl_neg[i])
         }
       }
@@ -98,8 +105,8 @@ natVelocity <- R6::R6Class("natVelocity",
       }
       
       if(k == 0){
-        private$cl <- rep(0, length(private$cl))
-        private$cl_neg <- rep(0, length(private$cl))
+        private$cl <- init_cl_cpp(length(private$cl))
+        private$cl_neg <- init_cl_cpp(length(private$cl_neg))
         private$abs_op <- 0
       }
       

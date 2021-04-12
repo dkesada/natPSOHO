@@ -16,18 +16,19 @@
 #' @param v_probs vector that defines the random velocity initialization probabilities
 #' @param p parameter of the truncated geometric distribution for sampling edges
 #' @param r_probs vector that defines the range of random variation of gb_cte and lb_cte
+#' @param cte boolean that defines whether the parameters remain constant or vary as the execution progresses
 #' @return A 'dbn' object with the structure of the best network found
 #' @export
 learn_dbn_structure_pso <- function(dt, max_size, n_inds = 50, n_it = 50,
                                     in_cte = 1, gb_cte = 0.5, lb_cte = 0.5,
                                     v_probs = c(10, 65, 25), p = 0.06,
-                                    r_probs = c(-0.5, 1.5)){
+                                    r_probs = c(-0.5, 1.5), cte = TRUE){
   #initial_size_check(size) --ICO-Merge
   #initial_df_check(dt) --ICO-Merge
   
-  ordering <- grep("_t_0", names(dt), value = TRUE) 
-  ctrl <- natPsoCtrl$new(ordering, max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
-                      v_probs, p, r_probs)
+  
+  ctrl <- natPsoCtrl$new(names(dt), max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
+                      v_probs, p, r_probs, cte)
   ctrl$run(dt)
   
   return(ctrl$get_best_network())
@@ -38,6 +39,7 @@ learn_dbn_structure_pso <- function(dt, max_size, n_inds = 50, n_it = 50,
 #' Modify 'debug_cpp' to test behaviours and interactions down in C++
 #' Currently: testing initialization times in both R and C++
 #' Results: equivalent times, O(n) as it should be. Will leave the R initialization.
+#' @param x some parameter
 #' @return whatever you want to return in the testing
 #' @export
 debug_foo <- function(x){

@@ -6,6 +6,9 @@
 \usage{
 debug_foo(x)
 }
+\arguments{
+\item{x}{some parameter}
+}
 \value{
 whatever you want to return in the testing
 }

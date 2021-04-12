@@ -7,3 +7,8 @@
 *.Rproj
 CRAN-RELEASE
 *.so
+/markdowns/*.txt
+/markdowns/*.out
+/markdowns/*.png
+/markdowns/*.Rdata
+

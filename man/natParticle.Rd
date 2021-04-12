@@ -4,7 +4,11 @@
 \alias{natParticle}
 \title{R6 class that defines a Particle in the PSO algorithm}
 \arguments{
+\item{nodes}{a vector with the names of the nodes}
+
 \item{ordering}{a vector with the names of the nodes in t_0}
+
+\item{ordering_raw}{a vector with the names of the nodes without the appended "_t_0"}
 
 \item{max_size}{maximum number of timeslices of the DBN}
 
@@ -51,6 +55,10 @@ A particle has a Position, a Velocity and a local best
 \item{\code{ps}}{position of the particle}
 
 \item{\code{cl}}{velocity of the particle}
+
+\item{\code{velocity}}{that takes the particle to the global best}
+
+\item{\code{velocity}}{that takes the particle to the local best}
 
 \item{\code{lb}}{local best score obtained}
 

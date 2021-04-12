@@ -5,16 +5,14 @@
 \title{R6 class that defines causal lists in the PSO}
 \arguments{
 \item{ordering}{a vector with the names of the nodes in t_0}
+
+\item{ordering_raw}{a vector with the names of the nodes without the appended "_t_0"}
 }
 \value{
 A new 'natCauslist' object
-
-the ordering with the names cropped
 }
 \description{
 Constructor of the 'natCauslist' class
-
-If the names of the nodes have "_t_0" appended at the end, remove it
 }
 \details{
 The causal lists will be the base of the positions and the velocities

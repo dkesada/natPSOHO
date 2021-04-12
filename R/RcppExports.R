@@ -51,14 +51,33 @@ bitcount <- function(x) {
 #' 
 #' Initialize the list with particles in C++. It is equivalent to initializing
 #' them in R, so this will be dropped. --ICO-Merge: delete if obsolete
+#' @param new_part function that creates a new particle
+#' @param n_inds number of particles that the algorithm will simultaneously process
+#' @param nodes a vector with the names of the nodes
 #' @param ordering the names of the nodes
+#' @param ordering_raw 
 #' @param max_size the maximum size of the DBN
-#' @param n_inds the number of particles
 #' @param v_probs vector that defines the random velocity initialization probabilities
 #' @param p parameter of the truncated geometric distribution for sampling edges
 #' @return a list with the randomly initialized particles
-init_list_cpp <- function(ordering, max_size, n_inds, v_probs, p) {
-    .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', ordering, max_size, n_inds, v_probs, p)
+init_list_cpp <- function(new_part, n_inds, nodes, ordering, ordering_raw, max_size, v_probs, p) {
+    .Call('_natPsoho_init_list_cpp', PACKAGE = 'natPsoho', new_part, n_inds, nodes, ordering, ordering_raw, max_size, v_probs, p)
+}
+
+#' Initialize the nodes vector
+#' 
+#' Initialize the vector in C++
+#' @param n_nodes number of receiving nodes
+#' @return a list with the randomly initialized particles
+init_cl_cpp <- function(n_nodes) {
+    .Call('_natPsoho_init_cl_cpp', PACKAGE = 'natPsoho', n_nodes)
+}
+
+#' If the names of the nodes have "_t_0" appended at the end, remove it
+#' @param names a vector with the names of the nodes in t_0
+#' @return the vector with the names cropped
+crop_names_cpp <- function(names) {
+    .Call('_natPsoho_crop_names_cpp', PACKAGE = 'natPsoho', names)
 }
 
 debug_cpp <- function(x, op, remove, max_int) {

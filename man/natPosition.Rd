@@ -4,19 +4,19 @@
 \alias{natPosition}
 \title{R6 class that defines DBNs as vectors of natural numbers}
 \arguments{
-\item{nodes}{A list with the names of the nodes in t_0 in the network
-If its not null, a random position will be generated for those nodes.}
+\item{nodes}{a vector with the names of the nodes}
+
+\item{ordering}{a vector with the names of the nodes in t_0}
+
+\item{ordering_raw}{a vector with the names of the nodes without the appended "_t_0"}
+
+\item{max_size}{Maximum number of timeslices of the DBN}
 
 \item{vl}{a natVelocity object}
-
-\item{ps}{a natPosition object
-return the natVelocity that gets the other position to this one}
 
 \item{net}{a dbn object}
 
 \item{n_vars}{the number of variables in t_0}
-
-\item{max_size}{the maximum size of the DBN}
 
 \item{p}{the parameter of the truncated geometric sampler. If lesser or
 equal to 0, a uniform distribution will be used instead.}
@@ -42,9 +42,6 @@ Uses this object private cl and transforms it into a DBN.
 Add a velocity to the position
 
 Given a natVelocity object, add it to the current position.
-
-Given another position, returns the velocity that gets it to this
-position.
 
 Return the static node ordering
 

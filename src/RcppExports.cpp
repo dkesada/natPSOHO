@@ -68,17 +68,42 @@ BEGIN_RCPP
 END_RCPP
 }
 // init_list_cpp
-Rcpp::List init_list_cpp(const Rcpp::StringVector& ordering, int max_size, int n_inds, const Rcpp::NumericVector& v_probs, float p);
-RcppExport SEXP _natPsoho_init_list_cpp(SEXP orderingSEXP, SEXP max_sizeSEXP, SEXP n_indsSEXP, SEXP v_probsSEXP, SEXP pSEXP) {
+Rcpp::List init_list_cpp(const Rcpp::Function& new_part, int n_inds, const Rcpp::StringVector& nodes, const Rcpp::StringVector& ordering, const Rcpp::StringVector& ordering_raw, int max_size, const Rcpp::NumericVector& v_probs, float p);
+RcppExport SEXP _natPsoho_init_list_cpp(SEXP new_partSEXP, SEXP n_indsSEXP, SEXP nodesSEXP, SEXP orderingSEXP, SEXP ordering_rawSEXP, SEXP max_sizeSEXP, SEXP v_probsSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering(orderingSEXP);
-    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::Function& >::type new_part(new_partSEXP);
     Rcpp::traits::input_parameter< int >::type n_inds(n_indsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type nodes(nodesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering(orderingSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type ordering_raw(ordering_rawSEXP);
+    Rcpp::traits::input_parameter< int >::type max_size(max_sizeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type v_probs(v_probsSEXP);
     Rcpp::traits::input_parameter< float >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(init_list_cpp(ordering, max_size, n_inds, v_probs, p));
+    rcpp_result_gen = Rcpp::wrap(init_list_cpp(new_part, n_inds, nodes, ordering, ordering_raw, max_size, v_probs, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// init_cl_cpp
+Rcpp::NumericVector init_cl_cpp(int n_nodes);
+RcppExport SEXP _natPsoho_init_cl_cpp(SEXP n_nodesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n_nodes(n_nodesSEXP);
+    rcpp_result_gen = Rcpp::wrap(init_cl_cpp(n_nodes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// crop_names_cpp
+Rcpp::StringVector crop_names_cpp(const Rcpp::StringVector& names);
+RcppExport SEXP _natPsoho_crop_names_cpp(SEXP namesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::StringVector& >::type names(namesSEXP);
+    rcpp_result_gen = Rcpp::wrap(crop_names_cpp(names));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -148,7 +173,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_natPsoho_nat_pos_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_pos_plus_vel_cpp, 4},
     {"_natPsoho_one_hot_cpp", (DL_FUNC) &_natPsoho_one_hot_cpp, 1},
     {"_natPsoho_bitcount", (DL_FUNC) &_natPsoho_bitcount, 1},
-    {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 5},
+    {"_natPsoho_init_list_cpp", (DL_FUNC) &_natPsoho_init_list_cpp, 8},
+    {"_natPsoho_init_cl_cpp", (DL_FUNC) &_natPsoho_init_cl_cpp, 1},
+    {"_natPsoho_crop_names_cpp", (DL_FUNC) &_natPsoho_crop_names_cpp, 1},
     {"_natPsoho_debug_cpp", (DL_FUNC) &_natPsoho_debug_cpp, 4},
     {"_natPsoho_nat_pos_minus_pos_cpp", (DL_FUNC) &_natPsoho_nat_pos_minus_pos_cpp, 4},
     {"_natPsoho_nat_vel_plus_vel_cpp", (DL_FUNC) &_natPsoho_nat_vel_plus_vel_cpp, 6},

@@ -169,23 +169,24 @@ int bitwise_sub(int x1, int x2){
 //' 
 //' Initialize the list with particles in C++. It is equivalent to initializing
 //' them in R, so this will be dropped. --ICO-Merge: delete if obsolete
+//' @param new_part function that creates a new particle
+//' @param n_inds number of particles that the algorithm will simultaneously process
+//' @param nodes a vector with the names of the nodes
 //' @param ordering the names of the nodes
+//' @param ordering_raw 
 //' @param max_size the maximum size of the DBN
-//' @param n_inds the number of particles
 //' @param v_probs vector that defines the random velocity initialization probabilities
 //' @param p parameter of the truncated geometric distribution for sampling edges
 //' @return a list with the randomly initialized particles
 // [[Rcpp::export]]
-Rcpp::List init_list_cpp(const Rcpp::StringVector &ordering, int max_size, int n_inds, const Rcpp::NumericVector &v_probs, float p){
+Rcpp::List init_list_cpp(const Rcpp::Function &new_part, int n_inds, const Rcpp::StringVector &nodes, const Rcpp::StringVector &ordering, 
+                         const Rcpp::StringVector &ordering_raw, int max_size, const Rcpp::NumericVector &v_probs, 
+                         float p){
   Rcpp::List res (n_inds);
-  Environment psoho("package:natPsoho");
-  Environment env = psoho["natParticle"];
-  Function new_part = env["new"];
-  
   
   for(int i = 0; i < n_inds; i++){
     Environment part;
-    part = new_part(ordering, max_size, v_probs, p);
+    part = new_part(nodes, ordering, ordering_raw, max_size, v_probs, p);
     res[i] = part;
   }
   
@@ -241,6 +242,37 @@ std::vector<int> find_open_bits_log_rec(int x, int idx, int depth){
   }
   
   return res;
+}
+
+//' Initialize the nodes vector
+//' 
+//' Initialize the vector in C++
+//' @param n_nodes number of receiving nodes
+//' @return a list with the randomly initialized particles
+// [[Rcpp::export]]
+Rcpp::NumericVector init_cl_cpp(int n_nodes){
+  Rcpp::NumericVector res (n_nodes);
+  
+  return res;
+}
+
+//' If the names of the nodes have "_t_0" appended at the end, remove it
+//' @param names a vector with the names of the nodes in t_0
+//' @return the vector with the names cropped
+// [[Rcpp::export]]
+Rcpp::StringVector crop_names_cpp(const Rcpp::StringVector &names){
+  StringVector res = Rcpp::clone(names);
+  std::string tmp;
+  std::size_t pos;
+  
+  for(int i = 0; i < res.size(); i++){
+    tmp = res[i];
+    pos = tmp.find("_");
+    tmp = tmp.substr(0, pos);
+    res[i] = tmp;
+  }
+  
+  return(res);
 }
 
 // Just a debug function to try out stuff

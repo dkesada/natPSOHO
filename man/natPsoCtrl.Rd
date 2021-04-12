@@ -14,6 +14,10 @@
 
 \item{r_probs}{vector that defines the range of random variation of gb_cte and lb_cte}
 
+\item{cte}{boolean that defines whether the parameters remain constant or vary as the execution progresses}
+
+\item{nodes}{a vector with the names of the nodes}
+
 \item{ordering}{a vector with the names of the nodes in t_0}
 
 \item{max_size}{maximum number of timeslices of the DBN}
@@ -32,6 +36,8 @@ A new 'natPsoCtrl' object
 the cluster attribute
 
 the size attribute
+
+the ordering with the names cropped
 }
 \description{
 Constructor of the 'natPsoCtrl' class
@@ -42,9 +48,13 @@ Transforms the best position found into a bn structure and returns it
 
 Main function of the pso algorithm.
 
+If the names of the nodes have "_t_0" appended at the end, remove it
+
 Initialize the particles for the algorithm to random positions and velocities.
 
 Evaluate the particles and update the global best
+
+Modify the PSO parameters after each iteration
 }
 \details{
 The controller will encapsulate the particles and run the algorithm
@@ -69,5 +79,13 @@ The controller will encapsulate the particles and run the algorithm
 \item{\code{b_scr}}{global best score obtained}
 
 \item{\code{r_probs}}{vector that defines the range of random variation of gb_cte and lb_cte}
+
+\item{\code{cte}}{boolean that defines whether the parameters remain constant or vary as the execution progresses}
+
+\item{\code{in_var}}{decrement of the inertia each iteration}
+
+\item{\code{gb_var}}{increment of the global best parameter each iteration}
+
+\item{\code{lb_var}}{increment of the local best parameter each iteration}
 }}
 

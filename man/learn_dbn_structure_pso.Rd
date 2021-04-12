@@ -14,7 +14,8 @@ learn_dbn_structure_pso(
   lb_cte = 0.5,
   v_probs = c(10, 65, 25),
   p = 0.06,
-  r_probs = c(-0.5, 1.5)
+  r_probs = c(-0.5, 1.5),
+  cte = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ learn_dbn_structure_pso(
 \item{p}{parameter of the truncated geometric distribution for sampling edges}
 
 \item{r_probs}{vector that defines the range of random variation of gb_cte and lb_cte}
+
+\item{cte}{boolean that defines whether the parameters remain constant or vary as the execution progresses}
 }
 \value{
 A 'dbn' object with the structure of the best network found

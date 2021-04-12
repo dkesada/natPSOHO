@@ -5,17 +5,21 @@ natParticle <- R6::R6Class("natParticle",
  public = list(
    #' @description 
    #' Constructor of the 'natParticle' class
+   #' @param nodes a vector with the names of the nodes
    #' @param ordering a vector with the names of the nodes in t_0
+   #' @param ordering_raw a vector with the names of the nodes without the appended "_t_0"
    #' @param max_size maximum number of timeslices of the DBN
    #' @param v_probs vector of probabilities for the velocity sampling
    #' @param p parameter of the truncated geometric distribution 
    #' @return A new 'natParticle' object
-   initialize = function(ordering, max_size, v_probs, p){
+   initialize = function(nodes, ordering, ordering_raw, max_size, v_probs, p){
      #initial_size_check(size) --ICO-Merge
      
-     private$ps <- natPosition$new(NULL, max_size, ordering, p)
-     private$vl <- natVelocity$new(private$ps$get_ordering(), max_size)
+     private$ps <- natPosition$new(nodes, ordering, ordering_raw, max_size, p)
+     private$vl <- natVelocity$new(ordering, ordering_raw, max_size)
      private$vl$randomize_velocity(v_probs, p)
+     private$vl_gb <- natVelocity$new(ordering, ordering_raw, max_size)
+     private$vl_lb <- natVelocity$new(ordering, ordering_raw, max_size)
      private$lb <- -Inf
    },
    
@@ -28,7 +32,8 @@ natParticle <- R6::R6Class("natParticle",
    #' @return The score of the current position
    eval_ps = function(dt){
      struct <- private$ps$bn_translate()
-     score <- bnlearn::score(struct, dt, type = "bge") # For now, unoptimized bge. Any Gaussian score could be used
+     score <- bnlearn::score(struct, dt, type = "bge", check.args = F, targets = private$ps$ordering) # For now, unoptimized bge. Any Gaussian score could be used
+     
      if(score > private$lb){
         private$lb <- score 
         private$lb_ps <- private$ps
@@ -52,15 +57,15 @@ natParticle <- R6::R6Class("natParticle",
       private$vl$cte_times_velocity(in_cte)
       # 2.- Velocity from global best
       op1 <- gb_cte * runif(1, r_probs[1], r_probs[2])
-      vl1 <- gb_ps$subtract_position(private$ps)
-      vl1$cte_times_velocity(op1)
+      private$vl_gb$subtract_positions(private$ps, gb_ps)
+      private$vl_gb$cte_times_velocity(op1)
       # 3.- Velocity from local best
       op2 <- lb_cte * runif(1, r_probs[1], r_probs[2])
-      vl2 <- private$lb_ps$subtract_position(private$ps)
-      vl2$cte_times_velocity(op2)
+      private$vl_lb$subtract_positions(private$ps, private$lb_ps)
+      private$vl_lb$cte_times_velocity(op2)
       # 4.- New velocity
-      private$vl$add_velocity(vl1)
-      private$vl$add_velocity(vl2)
+      private$vl$add_velocity(private$vl_gb)
+      private$vl$add_velocity(private$vl_lb)
       # 5.- Reduce velocity if higher than maximum. Awful results when the limit is low, so dropped for now.
       # if(private$vl$get_abs_op() > max_vl)
       #    private$vl$cte_times_velocity(max_vl / private$vl$get_abs_op())
@@ -83,6 +88,10 @@ natParticle <- R6::R6Class("natParticle",
    ps = NULL,
    #' @field cl velocity of the particle
    vl = NULL,
+   #' @field velocity that takes the particle to the global best
+   vl_gb = NULL, # Just to avoid instantiating thousands of velocities
+   #' @field velocity that takes the particle to the local best
+   vl_lb = NULL,
    #' @field lb local best score obtained
    lb = NULL,
    #' @field lb_ps local best position found

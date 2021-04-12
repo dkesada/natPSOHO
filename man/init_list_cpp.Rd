@@ -4,14 +4,29 @@
 \alias{init_list_cpp}
 \title{Initialize the particles}
 \usage{
-init_list_cpp(ordering, max_size, n_inds, v_probs, p)
+init_list_cpp(
+  new_part,
+  n_inds,
+  nodes,
+  ordering,
+  ordering_raw,
+  max_size,
+  v_probs,
+  p
+)
 }
 \arguments{
+\item{new_part}{function that creates a new particle}
+
+\item{n_inds}{number of particles that the algorithm will simultaneously process}
+
+\item{nodes}{a vector with the names of the nodes}
+
 \item{ordering}{the names of the nodes}
 
-\item{max_size}{the maximum size of the DBN}
+\item{ordering_raw}{}
 
-\item{n_inds}{the number of particles}
+\item{max_size}{the maximum size of the DBN}
 
 \item{v_probs}{vector that defines the random velocity initialization probabilities}
 

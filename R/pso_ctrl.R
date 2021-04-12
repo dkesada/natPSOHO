@@ -5,7 +5,7 @@ natPsoCtrl <- R6::R6Class("natPsoCtrl",
   public = list(
     #' @description 
     #' Constructor of the 'natPsoCtrl' class
-    #' @param ordering a vector with the names of the nodes in t_0
+    #' @param nodes a vector with the names of the nodes
     #' @param max_size maximum number of timeslices of the DBN
     #' @param n_inds number of particles that the algorithm will simultaneously process
     #' @param n_it maximum number of iterations of the pso algorithm
@@ -15,19 +15,27 @@ natPsoCtrl <- R6::R6Class("natPsoCtrl",
     #' @param v_probs vector that defines the random velocity initialization probabilities
     #' @param p parameter of the truncated geometric distribution for sampling edges
     #' @param r_probs vector that defines the range of random variation of gb_cte and lb_cte
+    #' @param cte boolean that defines whether the parameters remain constant or vary as the execution progresses
     #' @return A new 'natPsoCtrl' object
-    initialize = function(ordering, max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
-                          v_probs, p, r_probs){
+    initialize = function(nodes, max_size, n_inds, n_it, in_cte, gb_cte, lb_cte,
+                          v_probs, p, r_probs, cte){
       #initial_size_check(size) --ICO-Merge
       # Missing security checks --ICO-Merge
       
-      private$initialize_particles(ordering, max_size, n_inds, v_probs, p)
+      ordering <- grep("_t_0", nodes, value = TRUE) 
+      private$initialize_particles(nodes, ordering, max_size, n_inds, v_probs, p)
       private$gb_scr <- -Inf
       private$n_it <- n_it
       private$in_cte <- in_cte
       private$gb_cte <- gb_cte
       private$lb_cte <- lb_cte
       private$r_probs <- r_probs
+      private$cte <- cte
+      if(!cte){
+        private$in_var <- in_cte / n_it # Decrease inertia
+        private$gb_var <- (1-gb_cte) / n_it # Increase gb
+        private$lb_var <- lb_cte / n_it # Decrease gb
+      }
     },
     
     #' @description 
@@ -52,6 +60,9 @@ natPsoCtrl <- R6::R6Class("natPsoCtrl",
         # Inside loop. Update each particle
         for(p in private$parts)
           p$update_state(private$in_cte, private$gb_cte, private$gb_ps, private$lb_cte, private$r_probs)
+        
+        if(!private$cte)
+          private$adjust_pso_parameters()
         
         private$evaluate_particles(dt)
         utils::setTxtProgressBar(pb, i)
@@ -78,19 +89,41 @@ natPsoCtrl <- R6::R6Class("natPsoCtrl",
     gb_scr = NULL,
     #' @field r_probs vector that defines the range of random variation of gb_cte and lb_cte
     r_probs = NULL,
+    #' @field cte boolean that defines whether the parameters remain constant or vary as the execution progresses
+    cte = NULL,
+    #' @field in_var decrement of the inertia each iteration
+    in_var = NULL,
+    #' @field gb_var increment of the global best parameter each iteration
+    gb_var = NULL,
+    #' @field lb_var increment of the local best parameter each iteration
+    lb_var = NULL,
+    
+    #' @description 
+    #' If the names of the nodes have "_t_0" appended at the end, remove it
+    #' @param ordering a vector with the names of the nodes in t_0
+    #' @return the ordering with the names cropped
+    crop_names = function(ordering){
+      #sapply(ordering, function(x){gsub("_t_0", "", x)}, USE.NAMES = F)
+      crop_names_cpp(ordering)
+    },
     
     #' @description 
     #' Initialize the particles for the algorithm to random positions and velocities.
+    #' @param nodes a vector with the names of the nodes
     #' @param ordering a vector with the names of the nodes in t_0
     #' @param max_size maximum number of timeslices of the DBN
     #' @param n_inds number of particles that the algorithm will simultaneously process
     #' @param v_probs vector that defines the random velocity initialization probabilities
     #' @param p parameter of the truncated geometric distribution for sampling edges
-    initialize_particles = function(ordering, max_size, n_inds, v_probs, p){
+    initialize_particles = function(nodes, ordering, max_size, n_inds, v_probs, p){
       #private$parts <- parallel::parLapply(private$cl,1:n_inds, function(i){Particle$new(ordering, size)})
+      ordering_raw <- private$crop_names(ordering)
       private$parts <- vector(mode = "list", length = n_inds)
+      
+      # private$parts <- init_list_cpp(natParticle$new, n_inds, nodes, ordering, ordering_raw, max_size, v_probs, p) # Slower than pure R
+      
       for(i in 1:n_inds)
-        private$parts[[i]] <- natParticle$new(ordering, max_size, v_probs, p)
+        private$parts[[i]] <- natParticle$new(nodes, ordering, ordering_raw, max_size, v_probs, p)
     },
     
     #' @description 
@@ -104,6 +137,14 @@ natPsoCtrl <- R6::R6Class("natPsoCtrl",
           private$gb_ps <- p$get_ps()
         }
       }
+    },
+    
+    #' @description 
+    #' Modify the PSO parameters after each iteration
+    adjust_pso_parameters = function(){
+      private$in_cte <- private$in_cte - private$in_var
+      private$gb_cte <- private$gb_cte + private$gb_var
+      private$lb_cte <- private$lb_cte - private$lb_var
     }
   )
 )

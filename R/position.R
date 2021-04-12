@@ -8,37 +8,22 @@ natPosition <- R6::R6Class("natPosition",
   public = list(
     #' @description 
     #' Constructor of the 'natPosition' class
-    #' @param net dbn or dbn.fit object defining the network
+    #' @param nodes a vector with the names of the nodes
+    #' @param ordering a vector with the names of the nodes in t_0
+    #' @param ordering_raw a vector with the names of the nodes without the appended "_t_0"
     #' @param max_size Maximum number of timeslices of the DBN
-    #' @param nodes A list with the names of the nodes in t_0 in the network
-    #' If its not null, a random position will be generated for those nodes.
     #' @param p the parameter of the sampling truncated geometric distribution
     #' If lesser or equal to 0, a uniform distribution will be used instead. 
     #' @return A new 'natPosition' object
     #' @importFrom dbnR fold_dt
-    initialize = function(net, max_size, nodes = NULL, p = 0.06){
+    initialize = function(nodes, ordering, ordering_raw, max_size, p = 0.06){
       #initial_size_check(size) --ICO-Merge
       
-      if(!is.null(nodes)){
-        #initial_nodes_check(nodes)
-        super$initialize(nodes)
-        tmp <- matrix(0, nrow = max_size, ncol = length(nodes))
-        colnames(tmp) <- nodes
-        private$nodes <- names(dbnR::fold_dt(as.data.frame(tmp), max_size))
-        private$cl <- private$generate_random_position(length(nodes), max_size, p)
-        private$n_arcs <- private$recount_arcs()
-        
-      }
-      else{
-        #initial_dbn_check(net) --ICO-Merge
-        initial_dbn_to_causlist_check(net)
-        super$initialize(private$dbn_ordering(net))
-        private$nodes <- names(net$nodes)
-        private$n_arcs <- dim(net$arcs)[1]
-        private$cl_translate(net)
-      }
-      
+      super$initialize(ordering, ordering_raw)
+      private$nodes <- nodes
       private$max_size <- max_size
+      private$cl <- private$generate_random_position(length(ordering), p)
+      private$n_arcs <- private$recount_arcs()
       private$p <- p
     },
     
@@ -51,9 +36,8 @@ natPosition <- R6::R6Class("natPosition",
     #' @return a dbn object
     bn_translate = function(){
       arc_mat <- cl_to_arc_matrix_cpp(private$cl, private$ordering_raw, private$n_arcs)
-      
-      net <- bnlearn::empty.graph(private$nodes)
-      bnlearn::arcs(net) <- arc_mat
+      net <- bnlearn::empty.graph(private$nodes, check.args = FALSE)
+      bnlearn::arcs(net, check.cycles = FALSE, check.illegal = FALSE, check.bypass = TRUE) <- arc_mat
       
       return(net)
     },
@@ -65,19 +49,6 @@ natPosition <- R6::R6Class("natPosition",
     #' @param vl a natVelocity object
     add_velocity = function(vl){
       private$n_arcs <- nat_pos_plus_vel_cpp(private$cl, vl$get_cl(), vl$get_cl_neg(), private$n_arcs)
-    },
-    
-    #' @description 
-    #' Given another position, returns the velocity that gets it to this
-    #' position.
-    #'  
-    #' @param ps a natPosition object
-    #' return the natVelocity that gets the other position to this one
-    subtract_position = function(ps){
-      res <- natVelocity$new(private$ordering, private$max_size)
-      res$subtract_positions(ps, self)
-      
-      return(res)
     }
   ),
   
@@ -124,20 +95,19 @@ natPosition <- R6::R6Class("natPosition",
     #' geometric distribution. Much faster than the binary implementation with
     #' lists of lists and random bn generation into translation.
     #' @param n_vars the number of variables in t_0
-    #' @param max_size the maximum size of the DBN
     #' @param p the parameter of the truncated geometric sampler. If lesser or
     #' equal to 0, a uniform distribution will be used instead.
     #' @return a random position
-    generate_random_position = function(n_vars, max_size, p){
-      res <- rep(0, n_vars * n_vars)
+    generate_random_position = function(n_vars, p){
+      res <- init_cl_cpp(n_vars * n_vars)
       
       if(p <= 0){
-        res <- floor(runif(n_vars * n_vars, 0, max_size + 1))
+        res <- floor(runif(n_vars * n_vars, 0, 2^(private$max_size - 1)))
       }
       
       else{
         for(i in 1:length(res))
-          res[i] <- trunc_geom(p, max_size)
+          res[i] <- trunc_geom(p, 2^(private$max_size - 1))
       }
       
       return(res)

@@ -9,13 +9,14 @@ natCauslist <- R6::R6Class("natCauslist",
     #' @description 
     #' Constructor of the 'natCauslist' class
     #' @param ordering a vector with the names of the nodes in t_0
+    #' @param ordering_raw a vector with the names of the nodes without the appended "_t_0"
     #' @return A new 'natCauslist' object
-    initialize = function(ordering){
+    initialize = function(ordering, ordering_raw){
       #initial_size_check(size) --ICO-Merge
       
       private$ordering <- ordering
-      private$ordering_raw <- private$crop_names(ordering)
-      private$cl <- rep(0, length(ordering) * length(ordering))
+      private$ordering_raw <- ordering_raw
+      private$cl <- init_cl_cpp(length(ordering) * length(ordering))
     },
     
     get_cl = function(){return(private$cl)},
@@ -29,14 +30,7 @@ natCauslist <- R6::R6Class("natCauslist",
     #' @field ordering String vector defining the order of the nodes in t_0
     ordering = NULL,
     #' @field ordering String vector defining the order of the nodes without the appended "_t_0"
-    ordering_raw = NULL,
+    ordering_raw = NULL
     
-    #' @description 
-    #' If the names of the nodes have "_t_0" appended at the end, remove it
-    #' @param ordering a vector with the names of the nodes in t_0
-    #' @return the ordering with the names cropped
-    crop_names = function(ordering){
-      sapply(ordering, function(x){gsub("_t_0", "", x)}, USE.NAMES = F)
-    }
   )
 )
