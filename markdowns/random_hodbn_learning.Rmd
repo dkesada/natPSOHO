@@ -20,7 +20,10 @@ To be able to replicate this experiments, the following chunk of code has to be 
 ```{r install_github, eval = FALSE, echo = TRUE}
 library(devtools)
 devtools::install_github("dkesada/natPSOHO")
+devtools::install_github("dkesada/bnlearn_exp")
 ```
+
+*WARNING!* The experiments use a highly unstable bnlearn version I tailored specifically for the pso algorithms. Basically, it bypasses all the security checks when scoring a network, adding arcs to a graph and generating an empty graph. It speeds up the execution time greatly, but its use is discouraged outside of this package. Using it will VERY likely result in exceptions and unexpected behaviour. *If you run these experiments, be sure to install a fresh copy of bnlearn afterwards*. I have not decided yet what will I do with these experimental increase in performance one I merge the algorithm into the main package. Its current condition is far too unstable, but the performance improvement is substantial.
 
 The functions with the suffix '_exp' will be deleted in the final version of the package, and so some of the utils functions used in the experiments will be missing.
 
