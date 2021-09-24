@@ -92,7 +92,7 @@ ordering_gen_exp <- function(n){
 #' @param min_coef minimum coefficient allowed for the parent nodes
 #' @param max_coef maximum coefficient allowed for the parent nodes
 #' @param seed the seed of the experiment
-#' @return the number of arcs
+#' @return a dictionary with the original network structure and the sampled dataset
 #' @import data.table
 #' @export
 generate_random_network_exp <- function(n_vars, size, min_mu, max_mu,
