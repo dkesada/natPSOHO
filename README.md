@@ -25,8 +25,31 @@ added.
 The algorithm is now finished and tested. I represents a big improvement
 over the original binary version and it scales much better for higher
 orders. Some features are still work in progress, but for the most part
-it’s done. The algorithm will be summarized for a conference paper and
-afterwards it will be added to the ‘dbnR’ package.
+it’s done. Now that the implementation of the algorithm is finished and
+it has been included in the ‘dbnR’ package, further development in this
+repository will be halted.
+
+Beware that this version of the algorithm uses an experimental version
+of the *bnlearn* package (<https://github.com/dkesada/bnlearn_exp>) that
+I modified to bypass security checks and speed the computations
+considerably, so if for some reason someone wants to use this specific
+version of natPSOHO, the experimental version of bnlearn has to be
+installed from GitHub too. The *dbnR* version of this algorithm uses
+regular *bnlearn*, so it is much easier to use.
+
+A conference article that explains the natPSOHO algorithm in detail has
+also been made:
+
+-   Quesada, D., Bielza, C., & Larrañaga, P. (2021, September).
+    *Structure Learning of High-Order Dynamic Bayesian Networks via
+    Particle Swarm Optimization with Order Invariant Encoding*. In
+    International Conference on Hybrid Artificial Intelligence Systems
+    (pp. 158-171). Springer, Cham.
+
+It can be found on-line as a book chapter from the proceedings
+(<https://link.springer.com/chapter/10.1007/978-3-030-86271-8_14>) and
+as a preprint on ResearchGate
+(<https://www.researchgate.net/publication/354602610_Structure_Learning_of_High-Order_Dynamic_Bayesian_Networks_via_Particle_Swarm_Optimization_with_Order_Invariant_Encoding>)
 
 ## Some conclusions and remarks
 
@@ -46,17 +69,17 @@ favor of graphs with more populated lower orders.
 The performance and efficiency are also heavily improved in the new
 algorithm. This is mainly due to three reasons:
 
-  - Encoding the structure of the network in vectors whose length is
-    quadratic on the number of nodes in *only* t\_0 means that no matter
+-   Encoding the structure of the network in vectors whose length is
+    quadratic on the number of nodes in *only* t_0 means that no matter
     the order of the desired network, the size of the particles will
     remain constant. This helps the algorithm greatly when dealing with
     higher orders, where as in the original algorithm the causal lists
     get bigger with each order increase.
 
-  - Performing bitwise operations over an integer is much faster than
+-   Performing bitwise operations over an integer is much faster than
     iterating through lists and operating each value independently.
 
-  - Both of my implementations use ‘Rcpp’ and switch to C++ for
+-   Both of my implementations use ‘Rcpp’ and switch to C++ for
     operating over the particles One implementation uses named
     Rcpp::List and the other uses only Rcpp::NumericVector, but when
     implementing the new algorithm as a fork of the old one I saw a lot

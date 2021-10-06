@@ -15,7 +15,15 @@ This is an extension of the particle swarm optimization structure learning algor
 
 The main objective of this new encoding is to be able to learn the appropriate Markovian order of the network and the structure at the same time instead of having to fix the order beforehand. In this extension, you can fix a maximum order and the algorithm will search structures up to that point. The new encoding offers integer number vectors whose size only depend on the number of variables in t0, not on the order of the network. It also offers a way to favour smaller orders by fixing a geometric distribution that defines how often higher order arcs are added.
 
-The algorithm is now finished and tested. I represents a big improvement over the original binary version and it scales much better for higher orders. Some features are still work in progress, but for the most part it's done. The algorithm will be summarized for a conference paper and afterwards it will be added to the 'dbnR' package.
+The algorithm is now finished and tested. I represents a big improvement over the original binary version and it scales much better for higher orders. Some features are still work in progress, but for the most part it's done. Now that the implementation of the algorithm is finished and it has been included in the ‘dbnR’ package, further development in this repository will be halted. 
+
+Beware that this version of the algorithm uses an experimental version of the _bnlearn_ package (https://github.com/dkesada/bnlearn_exp) that I modified to bypass security checks and speed the computations considerably, so if for some reason someone wants to use this specific version of natPSOHO, the experimental version of bnlearn has to be installed from GitHub too. The _dbnR_ version of this algorithm uses regular _bnlearn_, so it is much easier to use. 
+
+A conference article that explains the natPSOHO algorithm in detail has also been made:
+
+* Quesada, D., Bielza, C., & Larrañaga, P. (2021, September). _Structure Learning of High-Order Dynamic Bayesian Networks via Particle Swarm Optimization with Order Invariant Encoding_. In International Conference on Hybrid Artificial Intelligence Systems (pp. 158-171). Springer, Cham.
+
+It can be found on-line as a book chapter from the proceedings (https://link.springer.com/chapter/10.1007/978-3-030-86271-8_14) and as a preprint on ResearchGate (https://www.researchgate.net/publication/354602610_Structure_Learning_of_High-Order_Dynamic_Bayesian_Networks_via_Particle_Swarm_Optimization_with_Order_Invariant_Encoding)
 
 ## Some conclusions and remarks
 
